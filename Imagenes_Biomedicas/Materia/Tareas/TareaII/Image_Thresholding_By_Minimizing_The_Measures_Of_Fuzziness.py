@@ -37,8 +37,8 @@ def measure_fuziness(X, mu0, mu1, threshold, H):
 #Obtaining the image in gray level...
 #imagen = misc.imread('BD1/Im001_1.jpg', mode='I')
 #imagen = misc.imread('BD1/Im001_1.jpg', flatten=True, mode='I')
-imagen = misc.imread('BD1/Im019_1.jpg', flatten=True, mode='I')
-imagen2 = misc.imread('BD1/Im019_1.jpg', flatten=True, mode='I')
+imagen = misc.imread('BD1/Im003_1.jpg', flatten=True, mode='I')
+imagen2 = misc.imread('BD1/Im003_1.jpg', flatten=True, mode='I')
 #imagen2 = misc.imread('BD1/Im001_1.jpg', flatten=True, mode='I')
 #imagen = Image.open('BD1/Im001_1.jpg')
 #imagen = imagen.convert('L')
@@ -93,8 +93,8 @@ for i in range(0, Width-1):
     imagen2[i][j] = maxv
 
 fig, (uno, dos) = plt.subplots(1,2)
-uno.imshow(imagen)
-dos.imshow(imagen2);
+uno.imshow(imagen, cmap='gray')
+dos.imshow(imagen2, cmap='gray');
 print imagen
 plt.show()
 
