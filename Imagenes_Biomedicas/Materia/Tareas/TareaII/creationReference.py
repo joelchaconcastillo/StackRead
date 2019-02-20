@@ -55,3 +55,6 @@ uno.imshow(imagen, cmap='gray')
 dos.imshow(imagenReference, cmap='gray');
 plt.show()
 #misc.imsave(str(sys.argv[2]), imagenReference)
+
+
+
