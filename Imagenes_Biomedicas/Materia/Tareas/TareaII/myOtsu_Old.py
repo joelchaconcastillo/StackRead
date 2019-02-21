@@ -7,41 +7,15 @@ def myOtsuK(filename, Classes):
  img = misc.imread(filename, flatten=True, mode='I')
  img = img.astype(int)
  [Width, Height] = np.shape(img)
-# if Classes==2:
-#  return Otsu2Optimized(img, Classes)
-# if Classes > 2:
- return GeneralizedOtsu(img, Classes)
-
-
-def EvaluateThresholds(combinationThresholds):
- return 2 
-
-def Combination(combinationThresholds, size, k, index, setThresholds, i ):
- ##Current combination is ready
- if index == k:
-   print evaluteThresholds(combinationThresholds)
-   return 0
- ##No more elemnts are there to put in combinationThresholds
- if i >= size:
-   return 0
- combinationThresholds[index] = setThresholds[i]
-
- Combination(combinationThresholds, size, k, index+1, setThresholds, i+1)
-
- Combination(combinationThresholds, size, k, index, setThresholds, i+1)
+ if Classes==2:
+  return Otsu2Optimized(img, Classes)
+ if Classes > 2:
+  return GeneralizedOtsu(img, Classes)
 
 def GeneralizedOtsu(img, Classes):
  imgFlat = img.flatten()
  minv = np.min(img)
  maxv = np.max(img)
- ##Generating factible solutions...
- setThresholds = np.arange(minv, maxv) 
- combinationThresholds = np.zeros(Classes-1)
- Combination(combinationThresholds, setThresholds.size, Classes-1, 0, setThresholds, 0)
- exit(0)
- return img
- 
-########33
  Pi = np.zeros(maxv+1)
  Wi = np.zeros(Classes)
  Mu = np.zeros(Classes)
