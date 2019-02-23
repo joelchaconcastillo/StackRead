@@ -3,17 +3,15 @@ from PIL import Image
 from scipy import misc
 import matplotlib.pyplot as plt
 import numpy as np
+import random
 def myOtsuK(filename, Classes):
  img = misc.imread(filename, flatten=True, mode='I')
  img = img.astype(int)
  [Width, Height] = np.shape(img)
- #if Classes==2:
- # return Otsu2Optimized(img, Classes)
- #if Classes > 2:
- #return GeneralizedOtsu(img, Classes)
- return GeneralizedOtsuDE(img, Classes)
-
-
+# if Classes==2:
+#  return Otsu2Optimized(img, Classes)
+# if Classes > 2:
+ return GeneralizedOtsu(img, Classes)
 
 def EvaluateThresholds(combinationThresholds,k, minv, maxv, Mt, optX, AccumPi, AccumiPi):
   Wi = np.zeros(k+1)
@@ -94,76 +92,6 @@ def GeneralizedOtsu(img, Classes):
  return img
 
 ###########################################
-def ObjectiveFunction(combinationThresholds, minv, maxv, Mt, optX, AccumPi, AccumiPi):
-  k = optX.size-2
-  Wi = np.zeros(k+1)
-  Mu = np.zeros(k+1)
-  i = int(combinationThresholds[0])
-  Wi[0] = AccumPi[i-1]
-  Mu[0] = (AccumiPi[i-1])/Wi[0]# scaled[minv:i].dot(Pi[minv:i])/Wi[0]
-  for z in range(1, k):
-     previntensity = int(combinationThresholds[z-1])+1
-     nextintensity = int(combinationThresholds[z])
-     Wi[z] = AccumPi[nextintensity] - AccumPi[previntensity-1]# np.sum(Pi[previntensity:nextintensity])
-     Mu[z] = (AccumiPi[nextintensity] - AccumiPi[previntensity-1])/(Wi[z]+0.000001)# scaled[previntensity:nextintensity].dot(Pi[previntensity:nextintensity])/(Wi[z])
-
-  previntensity = int(combinationThresholds[k-1])+1
-  Wi[-1] =  AccumPi[maxv] - AccumPi[previntensity-1]#
-  Mu[-1] = (AccumiPi[maxv] - AccumiPi[previntensity-1])/Wi[-1] # scaled[previntensity:maxv].dot(Pi[previntensity:maxv])/Wi[-1]
-  ##computing variance...
-  variance = Wi.dot(np.power(Mu-Mt,2))
-  if variance >  optX[0]:
-	optX[0] = variance
-	optX[1:optX.size] = combinationThresholds
-
-
-
-def OptimizationDE(setThresholds, minv, maxv, Mt, optX, AccumPi, AccumiPi):
-
-  ObjectiveFunction([10], minv, maxv, Mt, optX, AccumPi, AccumiPi)
-  print optX
-
-
-def GeneralizedOtsuDE(img, Classes):
- imgFlat = img.flatten()
- minv = np.min(img)
- maxv = np.max(img)
- ##Generating factible solutions...
- setThresholds = np.arange(minv+1, maxv) 
- Pi = np.zeros(maxv+1)
- AccumPi = np.zeros(maxv+1)
- scaled = np.arange(0, maxv+1)
- AccumiPi = np.zeros(maxv+1)
- Mt = scaled.dot(Pi)
- for i in range(0, imgFlat.size):
-  Pi[imgFlat[i]] +=(1.0/imgFlat.size)
- sumpi = 0.0
- sumipi = 0.0
- for i in range(minv, maxv+1):
-  sumpi += Pi[i]
-  sumipi += float(i)*Pi[i]
-  AccumPi[i] = sumpi
-  AccumiPi[i] =  sumipi
-
- combinationThresholds = np.zeros(Classes-1)
- optX = np.zeros(combinationThresholds.size+1)
- optX[0] = -10000000
-
- OptimizationDE(setThresholds, minv, maxv, Mt, optX, AccumPi, AccumiPi)
-
-
- print "Thresholds...."
- print optX
- delta = 254.0/(optX.size+1)
- intensityInterval = delta
- [Width, Height] = np.shape(img)
- img[ img < optX[1]] =intensityInterval
- for i in range(2, optX.size):
-   intensityInterval +=delta
-   img[np.logical_and((optX[i-1] > img),(optX[i] <= img))  ] = intensityInterval
- intensityInterval +=delta
- img[ img > optX[-1]] =intensityInterval
- return img
 #### Otsu method considering only two classes... 
 def Otsu2Optimized(img, Classes):
  [Width, Height] = np.shape(img)
