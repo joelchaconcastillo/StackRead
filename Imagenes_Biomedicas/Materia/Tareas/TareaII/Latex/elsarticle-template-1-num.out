@@ -1,0 +1,27 @@
+\BOOKMARK [1][-]{section.1}{ Thresholding Based on Attribute Similarity - Umbralizaci\363n Basado en la Similitud de Atributos}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{The fuzzy set and membership function - Conjunto difuso y funci\363n de pertenencia}{section.1}% 2
+\BOOKMARK [2][-]{subsection.1.2}{Measures of Fuzziness - Mediciones difusas}{section.1}% 3
+\BOOKMARK [3][-]{subsubsection.1.2.1}{Entrop\355a}{subsection.1.2}% 4
+\BOOKMARK [3][-]{subsubsection.1.2.2}{Medici\363n de Yager}{subsection.1.2}% 5
+\BOOKMARK [1][-]{section.2}{A Threshold Selection Method from Gray-Level Histograms - Un M\351todo para la Selecci\363n de Umbrales Basado en Histogramas de Escalas de Grises \(Otsu\)}{}% 6
+\BOOKMARK [1][-]{section.3}{A New Method for Gray-Level Picture Thresholding Using the Entropy of the Histogram - Un Nuevo M\351todo para el Umbral de Im\341genes de Nivel de Gris Mediante la Entrop\355a del Histograma}{}% 7
+\BOOKMARK [1][-]{section.4}{Indicadores de Calidad}{}% 8
+\BOOKMARK [2][-]{subsection.4.1}{Accuracy}{section.4}% 9
+\BOOKMARK [3][-]{subsubsection.4.1.1}{Sensitivity - True Positive Rate or True Positive Fraction}{subsection.4.1}% 10
+\BOOKMARK [2][-]{subsection.4.2}{Specificity - True Negative Rate or True Negative Fraction}{section.4}% 11
+\BOOKMARK [2][-]{subsection.4.3}{Positive Predictive Value - PPV}{section.4}% 12
+\BOOKMARK [2][-]{subsection.4.4}{Negative Predictive Value - NPV}{section.4}% 13
+\BOOKMARK [1][-]{section.5}{Evoluci\363n Diferencial en problemas de im\341genes}{}% 14
+\BOOKMARK [2][-]{subsubsection.5.0.1}{Inicializaci\363n}{section.5}% 15
+\BOOKMARK [3][-]{subsubsection.5.0.2}{Operador de mutaci\363n}{subsubsection.5.0.1}% 16
+\BOOKMARK [3][-]{subsubsection.5.0.3}{Operador de cruce}{subsubsection.5.0.1}% 17
+\BOOKMARK [3][-]{subsubsection.5.0.4}{Operador de selecci\363n}{subsubsection.5.0.1}% 18
+\BOOKMARK [2][-]{subsection.5.1}{Adaptaci\363n de Evoluci\363n Diferencial en un problema discreto}{section.5}% 19
+\BOOKMARK [2][-]{subsection.5.2}{Operador de mutaci\363n propuesto para este problema discreto}{section.5}% 20
+\BOOKMARK [2][-]{subsection.5.3}{Operador de cruce propuesto para este problema discreto}{section.5}% 21
+\BOOKMARK [1][-]{section.6}{Problema de Combinatoria para Umbralizar a varios niveles}{}% 22
+\BOOKMARK [1][-]{section.7}{Validaci\363n Experimental}{}% 23
+\BOOKMARK [2][-]{subsection.7.1}{Eficiencia en relaci\363n de los m\351todos propuestos}{section.7}% 24
+\BOOKMARK [2][-]{subsection.7.2}{Umbralizaci\363n de Im\341genes considerando dos clases}{section.7}% 25
+\BOOKMARK [2][-]{subsection.7.3}{Umbralizaci\363n Multi-nivel}{section.7}% 26
+\BOOKMARK [1][-]{section.8}{conclusiones}{}% 27

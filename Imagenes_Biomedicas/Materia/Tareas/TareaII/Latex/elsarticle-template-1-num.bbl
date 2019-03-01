@@ -1,0 +1,83 @@
+\begin{thebibliography}{11}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+\providecommand{\bibinfo}[2]{#2}
+\ifx\xfnm\relax \def\xfnm[#1]{\unskip,\space#1}\fi
+%Type = Article
+\bibitem[{Sezgin and Sankur(2004)}]{sezgin2004survey}
+\bibinfo{author}{M.~Sezgin}, \bibinfo{author}{B.~Sankur},
+\newblock \bibinfo{title}{Survey over image thresholding techniques and
+  quantitative performance evaluation},
+\newblock \bibinfo{journal}{Journal of Electronic imaging} \bibinfo{volume}{13}
+  (\bibinfo{year}{2004}) \bibinfo{pages}{146--166}.
+%Type = Article
+\bibitem[{Huang and Wang(1995)}]{huang1995image}
+\bibinfo{author}{L.-K. Huang}, \bibinfo{author}{M.-J.~J. Wang},
+\newblock \bibinfo{title}{Image thresholding by minimizing the measures of
+  fuzziness},
+\newblock \bibinfo{journal}{Pattern recognition} \bibinfo{volume}{28}
+  (\bibinfo{year}{1995}) \bibinfo{pages}{41--51}.
+%Type = Article
+\bibitem[{Otsu(1979)}]{otsu1979threshold}
+\bibinfo{author}{N.~Otsu},
+\newblock \bibinfo{title}{A threshold selection method from gray-level
+  histograms},
+\newblock \bibinfo{journal}{IEEE transactions on systems, man, and cybernetics}
+  \bibinfo{volume}{9} (\bibinfo{year}{1979}) \bibinfo{pages}{62--66}.
+%Type = Article
+\bibitem[{Pun(1980)}]{pun1980new}
+\bibinfo{author}{T.~Pun},
+\newblock \bibinfo{title}{A new method for grey-level picture thresholding
+  using the entropy of the histogram},
+\newblock \bibinfo{journal}{Signal processing} \bibinfo{volume}{2}
+  (\bibinfo{year}{1980}) \bibinfo{pages}{223--237}.
+%Type = Article
+\bibitem[{Kapur et~al.(1985)Kapur, Sahoo, and Wong}]{kapur1985new}
+\bibinfo{author}{J.~N. Kapur}, \bibinfo{author}{P.~K. Sahoo},
+  \bibinfo{author}{A.~K. Wong},
+\newblock \bibinfo{title}{A new method for gray-level picture thresholding
+  using the entropy of the histogram},
+\newblock \bibinfo{journal}{Computer vision, graphics, and image processing}
+  \bibinfo{volume}{29} (\bibinfo{year}{1985}) \bibinfo{pages}{273--285}.
+%Type = Inproceedings
+\bibitem[{Fenster and Chiu(2006)}]{fenster2006evaluation}
+\bibinfo{author}{A.~Fenster}, \bibinfo{author}{B.~Chiu},
+\newblock \bibinfo{title}{Evaluation of segmentation algorithms for medical
+  imaging},
+\newblock in: \bibinfo{booktitle}{2005 IEEE Engineering in Medicine and Biology
+  27th Annual Conference}, \bibinfo{organization}{IEEE}, pp.
+  \bibinfo{pages}{7186--7189}.
+%Type = Book
+\bibitem[{Price et~al.(2006)Price, Storn, and Lampinen}]{price2006differential}
+\bibinfo{author}{K.~Price}, \bibinfo{author}{R.~M. Storn},
+  \bibinfo{author}{J.~A. Lampinen}, \bibinfo{title}{Differential evolution: a
+  practical approach to global optimization}, \bibinfo{publisher}{Springer
+  Science \& Business Media}, \bibinfo{year}{2006}.
+%Type = Article
+\bibitem[{Olsson and Nelson(1975)}]{olsson1975nelder}
+\bibinfo{author}{D.~M. Olsson}, \bibinfo{author}{L.~S. Nelson},
+\newblock \bibinfo{title}{The nelder-mead simplex procedure for function
+  minimization},
+\newblock \bibinfo{journal}{Technometrics} \bibinfo{volume}{17}
+  (\bibinfo{year}{1975}) \bibinfo{pages}{45--51}.
+%Type = Inproceedings
+\bibitem[{Tanabe and Fukunaga(2013)}]{tanabe2013success}
+\bibinfo{author}{R.~Tanabe}, \bibinfo{author}{A.~Fukunaga},
+\newblock \bibinfo{title}{Success-history based parameter adaptation for
+  differential evolution},
+\newblock in: \bibinfo{booktitle}{2013 IEEE congress on evolutionary
+  computation}, \bibinfo{organization}{IEEE}, pp. \bibinfo{pages}{71--78}.
+%Type = Book
+\bibitem[{Cormen et~al.(2009)Cormen, Leiserson, Rivest, and
+  Stein}]{cormen2009introduction}
+\bibinfo{author}{T.~H. Cormen}, \bibinfo{author}{C.~E. Leiserson},
+  \bibinfo{author}{R.~L. Rivest}, \bibinfo{author}{C.~Stein},
+  \bibinfo{title}{Introduction to algorithms}, \bibinfo{publisher}{MIT press},
+  \bibinfo{year}{2009}.
+%Type = Article
+\bibitem[{Viola and Jones(2004)}]{viola2004robust}
+\bibinfo{author}{P.~Viola}, \bibinfo{author}{M.~J. Jones},
+\newblock \bibinfo{title}{Robust real-time face detection},
+\newblock \bibinfo{journal}{International journal of computer vision}
+  \bibinfo{volume}{57} (\bibinfo{year}{2004}) \bibinfo{pages}{137--154}.
+
+\end{thebibliography}

@@ -76,15 +76,16 @@ def GeneralizedKapur(img, Classes):
  optX = np.zeros(combinationThresholds.size+1)
  optX[0] = -10000000
  Combination(combinationThresholds, setThresholds.size-1, Classes-1, 0, setThresholds, 0, minv, maxv, Mt, optX, AccumPi, AccumiPi)
- print "Thresholds...."
- print optX
+ #print "Thresholds...."
+ #print optX
  delta = 254.0/(optX.size+1)
  intensityInterval = delta
  [Width, Height] = np.shape(img)
- img[ img < optX[1]] =intensityInterval
+ img2 = np.copy(img)
+ img[ img2 <= optX[1]] =intensityInterval
  for i in range(2, optX.size):
    intensityInterval +=delta
-   img[np.logical_and((optX[i-1] > img),(optX[i] <= img))  ] = intensityInterval
+   img[np.logical_and((optX[i-1] < img2),(optX[i] >= img2))  ] = int(intensityInterval)
  intensityInterval +=delta
- img[ img > optX[-1]] =intensityInterval
+ img[ img2 > optX[-1]] =intensityInterval
  return img

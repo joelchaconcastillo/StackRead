@@ -91,16 +91,18 @@ def GeneralizedOtsuGradient(filename, Classes):
 
  combinationThresholds = np.zeros(Classes-1)
  optX = GradientDescentMethod( minv, maxv, Mt, AccumPi, AccumiPi, Classes-1)
- print "Thresholds...."
- print optX
+# print "Thresholds...."
+# print optX
  delta = 254.0/(optX.size+1)
  intensityInterval = delta
  [Width, Height] = np.shape(img)
- img[ img < optX[1]] =intensityInterval
+ img2 = np.copy(img)
+ print optX
+ img[ img2 <= optX[1]] =intensityInterval
  for i in range(2, optX.size):
    intensityInterval +=delta
-   img[np.logical_and((optX[i-1] > img),(optX[i] <= img))  ] = intensityInterval
+   img[np.logical_and((optX[i-1] < img2),(optX[i] >= img2))  ] = intensityInterval
  intensityInterval +=delta
- img[ img > optX[-1]] =intensityInterval
+ img[ img2 > optX[-1]] =intensityInterval
  return img
 

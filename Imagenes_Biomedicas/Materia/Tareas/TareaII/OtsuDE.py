@@ -27,7 +27,7 @@ def ObjectiveFunction(combinationThresholds, minv, maxv, Mt, AccumPi, AccumiPi):
   return Wi.dot(np.power(Mu-Mt,2))
 
 def OptimizationDE(minv, maxv, Mt, AccumPi, AccumiPi, dimension):
-  npop =  max(50, dimension)
+  npop =  max(100, dimension)
   #Initialization....
   pop = np.random.randint( low = minv, high = maxv, size=(npop, dimension))
   evaluations = np.zeros(npop) 
@@ -36,14 +36,14 @@ def OptimizationDE(minv, maxv, Mt, AccumPi, AccumiPi, dimension):
   bestFitness = -10000000
   #evaluation..
   for target in range(0, npop):
-
+   #print pop
    #pop[target,:] = np.sort(pop[target,:])
    evaluations[target] = ObjectiveFunction(pop[target,:], minv, maxv, Mt, AccumPi, AccumiPi)
    if evaluations[target] > bestFitness:
      bestFitness = evaluations[target]
      databest = np.copy(pop[target,:])	
 
-  for gen in range(0, 50):
+  for gen in range(0, 1000):
      for target in range(0, npop):
        trial = np.copy(pop[target])
        #getting  two numbers...
@@ -65,9 +65,10 @@ def OptimizationDE(minv, maxv, Mt, AccumPi, AccumiPi, dimension):
          trial[d] =  pop[target][d] + (np.sign(diff))*random.uniform(1, abs(diff) )
         else:
          trial[d] = pop[target][d]
-        #print trial[d]
-        trial[d] = min(maxv, trial[d])
-        trial[d] = max(minv, trial[d])
+        if trial[d] > maxv:
+	 trial[d] = minv+1
+	if trial[d] < minv:
+	 trial[d] = maxv-1
        #trial = np.sort(trial)
        objtrial = ObjectiveFunction(trial, minv, maxv, Mt, AccumPi, AccumiPi)
        ##Selection
@@ -78,7 +79,7 @@ def OptimizationDE(minv, maxv, Mt, AccumPi, AccumiPi, dimension):
        if evaluations[target] > bestFitness: 
         bestFitness = evaluations[target]
         databest = np.copy(pop[target,:])	
-     #print bestFitness
+#     print bestFitness
   optX = np.zeros(dimension+1)
   optX[0] = bestFitness
   optX[1:dimension+1] = np.sort(databest)
@@ -111,16 +112,17 @@ def GeneralizedOtsuDE(filename, Classes):
 
  combinationThresholds = np.zeros(Classes-1)
  optX = OptimizationDE( minv, maxv, Mt, AccumPi, AccumiPi, Classes-1)
- print "Thresholds...."
- print optX
+ #print "Thresholds...."
+# print optX
  delta = 254.0/(optX.size+1)
  intensityInterval = delta
  [Width, Height] = np.shape(img)
- img[ img < optX[1]] =intensityInterval
+ img2 = np.copy(img)
+ img[ img2 <= optX[1]] =intensityInterval
  for i in range(2, optX.size):
    intensityInterval +=delta
-   img[np.logical_and((optX[i-1] > img),(optX[i] <= img))  ] = intensityInterval
+   img[np.logical_and((optX[i-1] < img2),(optX[i] >= img2))  ] = int(intensityInterval)
  intensityInterval +=delta
- img[ img > optX[-1]] =intensityInterval
+ img[ img2 > optX[-1]] =intensityInterval
  return img
 
