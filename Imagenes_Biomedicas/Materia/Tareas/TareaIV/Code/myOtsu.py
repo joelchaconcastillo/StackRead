@@ -4,10 +4,10 @@ from scipy import misc
 import matplotlib.pyplot as plt
 import numpy as np
 import random
-from skimage import data
-from skimage import filters
-from skimage import exposure
-
+#from skimage import data
+#from skimage import filters
+#from skimage import exposure
+from Global import ObjectiveFunction, ReconstructionImage
 
 def myOtsuK(filename, Classes):
  img = misc.imread(filename, flatten=True, mode='I')
@@ -94,13 +94,7 @@ def GeneralizedOtsu(img, Classes):
  intensityInterval = delta
  [Width, Height] = np.shape(img)
  img2 = np.copy(img)
- print optX
- img[ img2 <= optX[1]] =intensityInterval
- for i in range(2, optX.size):
-   intensityInterval +=delta
-   img[np.logical_and((optX[i-1] < img2),(optX[i] >= img2))  ] = intensityInterval
- intensityInterval +=delta
- img[ img2 > optX[-1]] = intensityInterval
+ ReconstructionImage(img, optX)
  return img
 
 ###########################################

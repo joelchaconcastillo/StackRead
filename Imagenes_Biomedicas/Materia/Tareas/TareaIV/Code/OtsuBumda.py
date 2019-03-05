@@ -4,7 +4,7 @@ from scipy import misc
 import matplotlib.pyplot as plt
 import numpy as np
 import random
-from Global import ObjectiveFunction
+from Global import ObjectiveFunction, ReconstructionImage
 
 def GeneralizedOtsuBumda(filename, Classes, PopulationSize, Niterations):
  img = misc.imread(filename, flatten=True, mode='I')
@@ -31,23 +31,9 @@ def GeneralizedOtsuBumda(filename, Classes, PopulationSize, Niterations):
   AccumiPi[i] =  sumipi
 
  combinationThresholds = np.zeros(Classes-1)
- optX = OptimizationBumda( 100, 100, Classes-1,minv, maxv, Mt, AccumPi, AccumiPi)
- #print "Thresholds...."
-# print optX
- delta = 254.0/(optX.size+1)
- intensityInterval = delta
- [Width, Height] = np.shape(img)
- img2 = np.copy(img)
- img[ img2 <= optX[1]] =intensityInterval
- for i in range(2, optX.size):
-   intensityInterval +=delta
-   img[np.logical_and((optX[i-1] < img2),(optX[i] >= img2))  ] = int(intensityInterval)
- intensityInterval +=delta
- img[ img2 > optX[-1]] =intensityInterval
+ optX = OptimizationBumda( Niterations, PopulationSize, Classes-1,minv, maxv, Mt, AccumPi, AccumiPi)
+ ReconstructionImage(img, optX)
  return img
-
-#def ObjectiveFunction(X):
-#  return (X-10).dot(X-10)
 
 def OptimizationBumda(Maxite, N, Dimension, minv, maxv, Mt, AccumPi, AccumiPi):
  #Initialization
@@ -86,7 +72,6 @@ def OptimizationBumda(Maxite, N, Dimension, minv, maxv, Mt, AccumPi, AccumiPi):
         Population[i,d] = min(Population[i,d], maxv)
       feval[i] =  -ObjectiveFunction(Population[i,:], minv, maxv, Mt, AccumPi, AccumiPi)
  optX = np.zeros(Dimension+1)
- optX[0] = feval[0]
+ optX[0] = -feval[0]
  optX[1:Dimension+1] = np.sort(Elite)
- print optX
  return optX

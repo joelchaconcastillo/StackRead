@@ -13,9 +13,9 @@ from myKapur import myKapurK
 from Landscapes import LandScapeOtsu, LandScapeKapur
 #from creationReference import generating 
 
-from skimage import data
-from skimage import filters
-from skimage import exposure
+#from skimage import data
+#from skimage import filters
+#from skimage import exposure
 
 #################MULTI-LEVEL-THRESHOLD############################
 
@@ -26,22 +26,14 @@ PopulationSize = 10
 NIterations = 500
 for x in f:
  #fig = plt.figure()
- #filename = 'BD1/'+x.rstrip()+'.jpg'
-# imagen2 = myOtsuK(filename, Clases)
-# imagenref = misc.imread('BD1/'+x.rstrip()+'.jpg', flatten=True, mode='I')
+ filename = 'images/'+x.rstrip()
+ imagen2 = myOtsuK(filename, Clases)
+# imagenref = misc.imread('images/'+x.rstrip(), flatten=True, mode='I')
 # val = filters.threshold_otsu(imagenref)
-# print val
  #exit(0)
- #plt.imsave(os.path.splitext(filename)[0]+'_Otsu_k'+str(Clases)+'.eps', imagen2, cmap='gray')
- #plt.close()
+ plt.imsave(os.path.splitext(filename)[0]+'_Otsu_k'+str(Clases)+'.eps', imagen2, cmap='gray')
+ plt.close()
 ##
-# fig = plt.figure()
-# filename = 'BD1/'+x.rstrip()+'.jpg'
-# imagen2 = Fuzzy_Entropy('BD1/'+x.rstrip()+'.jpg')
-# plt.imsave(os.path.splitext(filename)[0]+'_fuzzy_k'+str(Clases)+'.eps', imagen2, cmap='gray')
-# plt.close()
-
-
 
  #fig = plt.figure()
  #filename = 'BD1/'+x.rstrip()+'.jpg'
@@ -49,31 +41,30 @@ for x in f:
  #plt.imsave(os.path.splitext(filename)[0]+'_kapur_k'+str(Clases)+'.eps', imagen2, cmap='gray')
  #plt.close()
 
- fig = plt.figure()
- filename = 'images/'+x.rstrip()
- imagen2 = GeneralizedOtsuDE('images/'+x.rstrip(), Clases, PopulationSize, NIterations)
- plt.imsave(os.path.splitext(filename)[0]+'_OtsuDE_k'+str(Clases)+'.eps', imagen2, cmap='gray')
- 
- plt.close()
+# fig = plt.figure()
+# filename = 'images/'+x.rstrip()
+# imagen2 = GeneralizedOtsuDE('images/'+x.rstrip(), Clases, PopulationSize, NIterations)
+# plt.imsave(os.path.splitext(filename)[0]+'_OtsuDE_k'+str(Clases)+'.eps', imagen2, cmap='gray')
+# 
+# plt.close()
 
- fig = plt.figure()
- filename = 'images/'+x.rstrip()
- imagen2 = GeneralizedOtsuGradient('images/'+x.rstrip(), Clases, NIterations)
- plt.imsave(os.path.splitext(filename)[0]+'_OtsuGradient_k'+str(Clases)+'.eps', imagen2, cmap='gray')
- plt.close()
-
- fig = plt.figure()
- filename = 'images/'+x.rstrip()
- imagen2 = GeneralizedOtsuBumda('images/'+x.rstrip(), Clases, PopulationSize, NIterations)
- plt.imsave(os.path.splitext(filename)[0]+'_OtsuBumda_k'+str(Clases)+'.eps', imagen2, cmap='gray')
- plt.close()
-
- fig = plt.figure()
- filename = 'images/'+x.rstrip()
- imagen2 = GeneralizedOtsuDEEDM('images/'+x.rstrip(), Clases, PopulationSize, NIterations)
- plt.imsave(os.path.splitext(filename)[0]+'_OtsuDEEM_k'+str(Clases)+'.eps', imagen2, cmap='gray')
- plt.close()
-
+# fig = plt.figure()
+# filename = 'images/'+x.rstrip()
+# imagen2 = GeneralizedOtsuGradient('images/'+x.rstrip(), Clases, NIterations)
+# plt.imsave(os.path.splitext(filename)[0]+'_OtsuGradient_k'+str(Clases)+'.eps', imagen2, cmap='gray')
+# plt.close()
+#
+# fig = plt.figure()
+# filename = 'images/'+x.rstrip()
+# imagen2 = GeneralizedOtsuBumda('images/'+x.rstrip(), Clases, PopulationSize, NIterations)
+# plt.imsave(os.path.splitext(filename)[0]+'_OtsuBumda_k'+str(Clases)+'.eps', imagen2, cmap='gray')
+# plt.close()
+#
+# fig = plt.figure()
+# filename = 'images/'+x.rstrip()
+# imagen2 = GeneralizedOtsuDEEDM('images/'+x.rstrip(), Clases, PopulationSize, NIterations)
+# plt.imsave(os.path.splitext(filename)[0]+'_OtsuDEEM_k'+str(Clases)+'.eps', imagen2, cmap='gray')
+# plt.close()
 
 
  exit(0)

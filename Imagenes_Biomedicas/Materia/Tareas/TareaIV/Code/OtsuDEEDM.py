@@ -4,7 +4,7 @@ from scipy import misc
 import matplotlib.pyplot as plt
 import numpy as np
 import random
-from Global import ObjectiveFunction
+from Global import ObjectiveFunction, ReconstructionImage
 
 ##this function combines both populations and select the best...
 def replacement(Ptarget, evaluationsTarget, Ptrial, evaluationsTrial, minimumDistance):
@@ -170,17 +170,7 @@ def GeneralizedOtsuDEEDM(filename, Classes, PopulationSize, Niterations):
 
  combinationThresholds = np.zeros(Classes-1)
  optX = OptimizationDEEDM( PopulationSize, Niterations, minv, maxv, Mt, AccumPi, AccumiPi, Classes-1)
- #print "Thresholds...."
- print optX
- delta = 254.0/(optX.size+1)
- intensityInterval = delta
- [Width, Height] = np.shape(img)
- img2 = np.copy(img)
- img[ img2 <= optX[1]] =intensityInterval
- for i in range(2, optX.size):
-   intensityInterval +=delta
-   img[np.logical_and((optX[i-1] < img2),(optX[i] >= img2))  ] = int(intensityInterval)
- intensityInterval +=delta
- img[ img2 > optX[-1]] =intensityInterval
+
+ ReconstructionImage(img, optX)
  return img
 

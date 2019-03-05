@@ -24,3 +24,16 @@ def ObjectiveFunction(combinationThresholds, minv, maxv, Mt, AccumPi, AccumiPi):
   Mu[-1] = (AccumiPi[maxv] - AccumiPi[previntensity-1])/(Wi[-1]+epsilon) # scaled[previntensity:maxv].dot(Pi[previntensity:maxv])/Wi[-1]
   ##computing variance...
   return Wi.dot(np.power(Mu-Mt,2))
+
+def ReconstructionImage(img, optX):
+ delta = 254.0/(optX.size+1)
+ intensityInterval = delta
+ [Width, Height] = np.shape(img)
+ img2 = np.copy(img)
+ img[ img2 <= optX[1]] = intensityInterval
+ for i in range(2, optX.size):
+   intensityInterval +=delta
+   img[np.logical_and((optX[i-1] < img2),(optX[i] >= img2))  ] = int(intensityInterval)
+ intensityInterval +=delta
+ img[ img2 > optX[-1]] =intensityInterval
+ 

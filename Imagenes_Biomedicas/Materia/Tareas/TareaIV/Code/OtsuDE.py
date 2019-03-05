@@ -4,7 +4,7 @@ from scipy import misc
 import matplotlib.pyplot as plt
 import numpy as np
 import random
-from Global import ObjectiveFunction
+from Global import ObjectiveFunction, ReconstructionImage
 
 def OptimizationDE(npop, Niterations, minv, maxv, Mt, AccumPi, AccumiPi, dimension):
   #Initialization....
@@ -48,7 +48,6 @@ def OptimizationDE(npop, Niterations, minv, maxv, Mt, AccumPi, AccumiPi, dimensi
 	 trial[d] = minv+1
 	if trial[d] < minv:
 	 trial[d] = maxv-1
-       #trial = np.sort(trial)
        objtrial = ObjectiveFunction(trial, minv, maxv, Mt, AccumPi, AccumiPi)
        ##Selection
        if objtrial > evaluations[target]:
@@ -58,7 +57,6 @@ def OptimizationDE(npop, Niterations, minv, maxv, Mt, AccumPi, AccumiPi, dimensi
        if evaluations[target] > bestFitness: 
         bestFitness = evaluations[target]
         databest = np.copy(pop[target,:])	
-#     print bestFitness
   optX = np.zeros(dimension+1)
   optX[0] = bestFitness
   optX[1:dimension+1] = np.sort(databest)
@@ -90,17 +88,7 @@ def GeneralizedOtsuDE(filename, Classes, PopulationSize, Niterations):
 
  combinationThresholds = np.zeros(Classes-1)
  optX = OptimizationDE(PopulationSize, Niterations, minv, maxv, Mt, AccumPi, AccumiPi, Classes-1)
- #print "Thresholds...."
  print optX
- delta = 254.0/(optX.size+1)
- intensityInterval = delta
- [Width, Height] = np.shape(img)
- img2 = np.copy(img)
- img[ img2 <= optX[1]] =intensityInterval
- for i in range(2, optX.size):
-   intensityInterval +=delta
-   img[np.logical_and((optX[i-1] < img2),(optX[i] >= img2))  ] = int(intensityInterval)
- intensityInterval +=delta
- img[ img2 > optX[-1]] =intensityInterval
+ ReconstructionImage(img, optX)
  return img
 
