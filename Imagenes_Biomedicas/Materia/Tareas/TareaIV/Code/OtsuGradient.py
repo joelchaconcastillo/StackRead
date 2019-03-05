@@ -40,7 +40,7 @@ def Gradient(X, minv, maxv, Mt, AccumPi, AccumiPi):
      gradient[d] = (ObjectiveFunction(Xi1, minv, maxv, Mt, AccumPi, AccumiPi)-ObjectiveFunction(Xi2, minv, maxv, Mt, AccumPi, AccumiPi))
     return gradient
 
-def GradientDescentMethod(minv, maxv, Mt, AccumPi, AccumiPi, dimension):
+def GradientDescentMethod(minv, maxv, Mt, AccumPi, AccumiPi, dimension, maxite):
   delta = float(maxv-minv)/dimension
   X =  np.zeros(dimension)# np.random.uniform( low = minv, high = maxv, size=(dimension))
   T = 0
@@ -50,7 +50,6 @@ def GradientDescentMethod(minv, maxv, Mt, AccumPi, AccumiPi, dimension):
   X[ X > maxv] = maxv
   X[ X < minv] = minv
   alpha = 0.001 #stepsize 
-  maxite = 500
   for ite in range(0, maxite):
     alpha =  np.random.uniform(0.4,0.9)
     Xtmp = np.copy(X)
@@ -62,9 +61,10 @@ def GradientDescentMethod(minv, maxv, Mt, AccumPi, AccumiPi, dimension):
   optX = np.zeros(dimension+1)
   optX[0] = ObjectiveFunction(X, minv, maxv, Mt, AccumPi, AccumiPi)
   optX[1:dimension+1] = np.sort(X.astype(int))
+  print optX
   return optX
 
-def GeneralizedOtsuGradient(filename, Classes):
+def GeneralizedOtsuGradient(filename, Classes, maxite):
 
  img = misc.imread(filename, flatten=True, mode='I')
  img = img.astype(int)
@@ -90,7 +90,7 @@ def GeneralizedOtsuGradient(filename, Classes):
   AccumiPi[i] =  sumipi
 
  combinationThresholds = np.zeros(Classes-1)
- optX = GradientDescentMethod( minv, maxv, Mt, AccumPi, AccumiPi, Classes-1)
+ optX = GradientDescentMethod( minv, maxv, Mt, AccumPi, AccumiPi, Classes-1, maxite)
 # print "Thresholds...."
 # print optX
  delta = 254.0/(optX.size+1)

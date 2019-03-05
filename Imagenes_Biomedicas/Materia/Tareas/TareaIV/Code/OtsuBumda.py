@@ -88,4 +88,5 @@ def OptimizationBumda(Maxite, N, Dimension, minv, maxv, Mt, AccumPi, AccumiPi):
  optX = np.zeros(Dimension+1)
  optX[0] = feval[0]
  optX[1:Dimension+1] = np.sort(Elite)
+ print optX
  return optX

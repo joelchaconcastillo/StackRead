@@ -8,57 +8,80 @@ from Global import ObjectiveFunction
 
 ##this function combines both populations and select the best...
 def replacement(Ptarget, evaluationsTarget, Ptrial, evaluationsTrial, minimumDistance):
- [n, m] = np.shape(Ptarget)
+  [n, m] = np.shape(Ptarget)
   candidates = np.zeros((2*n, m))
   fcandidates = np.zeros(2*n) 
-  survivors= np.zeros((2*n, m))
-  fsurvivors= np.zeros(2*n) 
-  selected = np.zeros(2*n)
-  penalized = []
-  fpenalized = []
+ # survivors= np.zeros((2*n, m))
+ # fsurvivors= np.zeros(2*n) 
+  selectedsurvivors = np.zeros(2*n)
+  selectedPenalized = np.zeros(2*n)
+ # penalized = []
+ # fpenalized = []
 
   ##joining...
   for i in range(0,n):
      candidates[i] = np.copy(Ptarget[i])
-     fcandidates[i] = evaluationsTarget[i]
+     fcandidates[i] = -evaluationsTarget[i]
   for i in range(0,n):
      candidates[i+n] = np.copy(Ptrial[i])
-     fcandidates[i+n] = evaluationsTrial[i]
+     fcandidates[i+n] = -evaluationsTrial[i]
 
 
   ##preprocessing .....
-  distances = np.ones(2*n)*100000000000000
   ##sorting based in the fitness....
   IndexSorted = np.argsort(fcandidates)
-  int index = 0 
-  survivors[index] = np.copy.candidates[IndexSorted[0]]
-  fsurvivors[index] = fcandidates[IndexSorted[0]]
-  selected[IndexSorted[0]] = 1
-  index +=1
-
-  for i in range(1, 2*n):
-   if selected[index[i]] == 1:
-    continue
-   for j in range(i+1, 2*n):
-     if selected[index[j]] == 1:
-       continue
-     if np.linealg.norm( survivors[j] - candidates[i]) < minimumDistance:
-       penalized.vstack(candidates[i])
-       fpenalized.
-     
-       continue
-     selected[index] = candidates[i]
-     fsurvivors[index] = candidates[i]
-     index += 1 
-
-
-
-
+  selectedsurvivors[IndexSorted[0]] = 1
+  cont = 1
   for i in range(0, 2*n):
+   if selectedsurvivors[IndexSorted[i]] == 1 or selectedPenalized[IndexSorted[i]] == 1: 
+    continue
+   for j in range(0, 2*n):
+     if selectedsurvivors[j] == 1 or selectedPenalized[j] == 1: 
+       continue
+     diff = ( candidates[j] - candidates[IndexSorted[i]])/255
+     if np.sqrt(diff.dot(diff)) < minimumDistance:
+        selectedPenalized[j] = 1
+        continue
+   selectedsurvivors[i] = 1
+   cont +=1
+   if cont >= n:
+     break;
+  #print cont
+
+#  print "selected... " + str(cont)
+  distances = np.ones(2*n)*100000000000000
+  for i in range(0, 2*n):
+    if selectedPenalized[i] != 1:
+      continue
     for j in range(0, 2*n):
-      distances[i] = min(distances[i], np.linealg.norm(candidates[i,:] - candidates[j,:]))
+      if selectedsurvivors[i] !=1:
+        continue
+      diff = ( candidates[j] - candidates[i])/255
+      distances[i] = min(distances[i], np.sqrt(diff.dot(diff)))
 
-
+  while cont < n:
+     maxdistance = -1000000000
+     indexdistance = -1
+     for i in range(0, 2*n):
+        if selectedPenalized[i] != 1:
+	  continue
+        if distances[i] > maxdistance:
+	   maxdistance = distances[i]
+	   indexdistance = i
+     selectedsurvivors[indexdistance] = 1
+     selectedPenalized[indexdistance] = 0
+     for i in range(0, 2*n):
+	if selectedPenalized[i] != 1:
+	   continue
+        diff = ( candidates[indexdistance] - candidates[i])/(255)
+        distances[i] = min(distances[i], np.sqrt(diff.dot(diff)))
+     cont +=1
+  cont = 0
+  for i in range(0,2*n):
+    if selectedsurvivors[i] == 1:
+     Ptarget[cont] = np.copy(candidates[i])
+     evaluationsTarget[cont] = -fcandidates[i]
+     cont +=1
   
 
 def OptimizationDEEDM(npop, Niterations, minv, maxv, Mt, AccumPi, AccumiPi, dimension):
@@ -70,6 +93,7 @@ def OptimizationDEEDM(npop, Niterations, minv, maxv, Mt, AccumPi, AccumiPi, dime
   ##Elite...
   databest = np.zeros(dimension)
   bestFitness = -10000000
+  InitialminimumDistance = np.sqrt(dimension)*0.2
   #evaluation..
   for target in range(0, npop):
    evaluationsTarget[target] = ObjectiveFunction(Ptarget[target,:], minv, maxv, Mt, AccumPi, AccumiPi)
@@ -78,6 +102,7 @@ def OptimizationDEEDM(npop, Niterations, minv, maxv, Mt, AccumPi, AccumiPi, dime
      databest = np.copy(Ptarget[target,:])	
 
   for gen in range(0, Niterations):
+     minimumDistance = InitialminimumDistance -InitialminimumDistance*( float(gen)/(0.9*Niterations)  )
      for target in range(0, npop):
        Ptrial[target] = np.copy(Ptarget[target])
        #getting  two numbers...
@@ -95,13 +120,13 @@ def OptimizationDEEDM(npop, Niterations, minv, maxv, Mt, AccumPi, AccumiPi, dime
        for d in range(0, dimension):
 	if random.uniform(0, 1) <= CR or index == d:
          diff = Ptarget[r1][d] - Ptarget[r2][d]
-         Ptrial[d] =  Ptarget[target][d] + (np.sign(diff))*random.uniform(1, abs(diff) )
+         Ptrial[target][d] =  Ptarget[target][d] + (np.sign(diff))*random.uniform(1, abs(diff) )
         else:
-         Ptrial[d] = Ptarget[target][d]
-        if Ptrial[d] > maxv:
-	 Ptrial[d] = minv+1
-	if Ptrial[d] < minv:
-	 Ptrial[d] = maxv-1
+         Ptrial[target][d] = Ptarget[target][d]
+        if Ptrial[target][d] > maxv:
+	 Ptrial[target][d] = minv+1
+	if Ptrial[target][d] < minv:
+	 Ptrial[target][d] = maxv-1
        #trial = np.sort(trial)
        evaluationsTrial[target] = ObjectiveFunction(Ptrial[target,:], minv, maxv, Mt, AccumPi, AccumiPi)
        ##Selection
@@ -114,7 +139,6 @@ def OptimizationDEEDM(npop, Niterations, minv, maxv, Mt, AccumPi, AccumiPi, dime
         databest = np.copy(Ptarget[target,:])	
        ########replacement phase...
      replacement(Ptarget, evaluationsTarget, Ptrial, evaluationsTrial, minimumDistance) 
-#     print bestFitness
   optX = np.zeros(dimension+1)
   optX[0] = bestFitness
   optX[1:dimension+1] = np.sort(databest)
@@ -147,7 +171,7 @@ def GeneralizedOtsuDEEDM(filename, Classes, PopulationSize, Niterations):
  combinationThresholds = np.zeros(Classes-1)
  optX = OptimizationDEEDM( PopulationSize, Niterations, minv, maxv, Mt, AccumPi, AccumiPi, Classes-1)
  #print "Thresholds...."
-# print optX
+ print optX
  delta = 254.0/(optX.size+1)
  intensityInterval = delta
  [Width, Height] = np.shape(img)

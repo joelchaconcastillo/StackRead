@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from myOtsu import myOtsuK
 from OtsuDE import GeneralizedOtsuDE
-#from OtsuDEEDM import GeneralizedOtsuDEEDM
+from OtsuDEEDM import GeneralizedOtsuDEEDM
 from OtsuBumda import GeneralizedOtsuBumda
 from OtsuGradient import GeneralizedOtsuGradient
 from myKapur import myKapurK
@@ -21,9 +21,9 @@ from skimage import exposure
 
 f = open('files', "r")
 #in each coordinate...
-Clases=6
-PopulationSize = 50
-NIterations = 300
+Clases=2
+PopulationSize = 10
+NIterations = 500
 for x in f:
  #fig = plt.figure()
  #filename = 'BD1/'+x.rstrip()+'.jpg'
@@ -56,23 +56,23 @@ for x in f:
  
  plt.close()
 
- ##fig = plt.figure()
- ##filename = 'BD1/'+x.rstrip()+'.jpg'
- ##imagen2 = GeneralizedOtsuGradient('BD1/'+x.rstrip()+'.jpg', Clases)
- ##plt.imsave(os.path.splitext(filename)[0]+'_OtsuGradient_k'+str(Clases)+'.eps', imagen2, cmap='gray')
- ##plt.close()
+ fig = plt.figure()
+ filename = 'images/'+x.rstrip()
+ imagen2 = GeneralizedOtsuGradient('images/'+x.rstrip(), Clases, NIterations)
+ plt.imsave(os.path.splitext(filename)[0]+'_OtsuGradient_k'+str(Clases)+'.eps', imagen2, cmap='gray')
+ plt.close()
 
- #fig = plt.figure()
- #filename = 'images/'+x.rstrip()
- #imagen2 = GeneralizedOtsuBumda('images/'+x.rstrip(), Clases, PopulationSize, NIterations)
- #plt.imsave(os.path.splitext(filename)[0]+'_OtsuBumda_k'+str(Clases)+'.eps', imagen2, cmap='gray')
- #plt.close()
+ fig = plt.figure()
+ filename = 'images/'+x.rstrip()
+ imagen2 = GeneralizedOtsuBumda('images/'+x.rstrip(), Clases, PopulationSize, NIterations)
+ plt.imsave(os.path.splitext(filename)[0]+'_OtsuBumda_k'+str(Clases)+'.eps', imagen2, cmap='gray')
+ plt.close()
 
-# fig = plt.figure()
-# filename = 'images/'+x.rstrip()
-# imagen2 = GeneralizedOtsuDEEDM('images/'+x.rstrip(), Clases, PopulationSize, NIterations)
-# plt.imsave(os.path.splitext(filename)[0]+'_OtsuDEEM_k'+str(Clases)+'.eps', imagen2, cmap='gray')
-# plt.close()
+ fig = plt.figure()
+ filename = 'images/'+x.rstrip()
+ imagen2 = GeneralizedOtsuDEEDM('images/'+x.rstrip(), Clases, PopulationSize, NIterations)
+ plt.imsave(os.path.splitext(filename)[0]+'_OtsuDEEM_k'+str(Clases)+'.eps', imagen2, cmap='gray')
+ plt.close()
 
 
 

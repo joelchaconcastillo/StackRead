@@ -6,8 +6,7 @@ import numpy as np
 import random
 from Global import ObjectiveFunction
 
-def OptimizationDE(PopulationSize, Niterations, minv, maxv, Mt, AccumPi, AccumiPi, dimension):
-  npop =  max(100, dimension)
+def OptimizationDE(npop, Niterations, minv, maxv, Mt, AccumPi, AccumiPi, dimension):
   #Initialization....
   pop = np.random.randint( low = minv, high = maxv, size=(npop, dimension))
   evaluations = np.zeros(npop) 
@@ -23,7 +22,7 @@ def OptimizationDE(PopulationSize, Niterations, minv, maxv, Mt, AccumPi, AccumiP
      bestFitness = evaluations[target]
      databest = np.copy(pop[target,:])	
 
-  for gen in range(0, 1000):
+  for gen in range(0, Niterations):
      for target in range(0, npop):
        trial = np.copy(pop[target])
        #getting  two numbers...
@@ -92,7 +91,7 @@ def GeneralizedOtsuDE(filename, Classes, PopulationSize, Niterations):
  combinationThresholds = np.zeros(Classes-1)
  optX = OptimizationDE(PopulationSize, Niterations, minv, maxv, Mt, AccumPi, AccumiPi, Classes-1)
  #print "Thresholds...."
-# print optX
+ print optX
  delta = 254.0/(optX.size+1)
  intensityInterval = delta
  [Width, Height] = np.shape(img)
