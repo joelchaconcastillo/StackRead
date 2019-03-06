@@ -1,9 +1,11 @@
 import math
 import os
+import random
 from PIL import Image
 from scipy import misc
 import matplotlib.pyplot as plt
 import numpy as np
+import sys
 from myOtsu import myOtsuK
 from OtsuDE import GeneralizedOtsuDE
 from OtsuDEEDM import GeneralizedOtsuDEEDM
@@ -11,6 +13,7 @@ from OtsuBumda import GeneralizedOtsuBumda
 from OtsuGradient import GeneralizedOtsuGradient
 from myKapur import myKapurK
 from Landscapes import LandScapeOtsu, LandScapeKapur
+from Global import PSNR, SSIM
 #from creationReference import generating 
 
 #from skimage import data
@@ -18,57 +21,80 @@ from Landscapes import LandScapeOtsu, LandScapeKapur
 #from skimage import exposure
 
 #################MULTI-LEVEL-THRESHOLD############################
-
+random.seed(9001)
 f = open('files', "r")
 #in each coordinate...
-Clases=2
-PopulationSize = 10
-NIterations = 500
+Clases=20
+PopulationSize = 30
+NIterations = ((Clases-1)*10000)/30
+
+Reptetitions = 10
+NAlgorithms = 4
+NImages = 10
+AveragePSNR = np.zeros((NAlgorithms,NImages))
+AverageObjective = np.zeros((NAlgorithms, NImages))
+AverageSSIM = np.zeros((NAlgorithms, NImages))
+cont = 0
 for x in f:
- #fig = plt.figure()
- filename = 'images/'+x.rstrip()
- imagen2 = myOtsuK(filename, Clases)
-# imagenref = misc.imread('images/'+x.rstrip(), flatten=True, mode='I')
-# val = filters.threshold_otsu(imagenref)
- #exit(0)
- plt.imsave(os.path.splitext(filename)[0]+'_Otsu_k'+str(Clases)+'.eps', imagen2, cmap='gray')
- plt.close()
-##
+ dataPSNR = np.zeros((NAlgorithms, Reptetitions))
+ dataSSIM = np.zeros((NAlgorithms, Reptetitions))
+ dataobj = np.zeros((NAlgorithms, Reptetitions))
+ for rep in range(0,Reptetitions):
+  sys.stderr.write(str(rep)+"\n")
+  imagenref = misc.imread('images/'+x.rstrip(), flatten=True, mode='I')
+ # #fig = plt.figure()
+  filename = 'images/'+x.rstrip()
+ # imagen2 = myOtsuK(filename, Clases)
+ # plt.imsave(os.path.splitext(filename)[0]+'_Otsu_k'+str(Clases)+'.eps', imagen2, cmap='gray')
+ 
+ ##
+ 
+  #fig = plt.figure()
+  #filename = 'BD1/'+x.rstrip()+'.jpg'
+  #imagen2 = myKapurK('BD1/'+x.rstrip()+'.jpg', Clases)
+  #plt.imsave(os.path.splitext(filename)[0]+'_kapur_k'+str(Clases)+'.eps', imagen2, cmap='gray')
+  #plt.close()
+ 
+#  filename = 'images/'+x.rstrip()
+  imagen2, obj = GeneralizedOtsuDE('images/'+x.rstrip(), Clases, PopulationSize, NIterations)
+  #plt.imsave(os.path.splitext(filename)[0]+'_OtsuDE_k'+str(Clases)+'.eps', imagen2, cmap='gray')
+  dataPSNR[0, rep] = PSNR(imagen2, imagenref)
+  dataSSIM[0, rep] = SSIM(imagen2, imagenref)
+  dataobj[0, rep] = obj
+  
+ 
+  #fig = plt.figure()
+  filename = 'images/'+x.rstrip()
+  imagen2, obj = GeneralizedOtsuGradient('images/'+x.rstrip(), Clases, NIterations)
+  #plt.imsave(os.path.splitext(filename)[0]+'_OtsuGradient_k'+str(Clases)+'.eps', imagen2, cmap='gray')
+  dataPSNR[1, rep] = PSNR(imagen2, imagenref)
+  dataSSIM[1, rep] = SSIM(imagen2, imagenref)
+  dataobj[1, rep] = obj
 
- #fig = plt.figure()
- #filename = 'BD1/'+x.rstrip()+'.jpg'
- #imagen2 = myKapurK('BD1/'+x.rstrip()+'.jpg', Clases)
- #plt.imsave(os.path.splitext(filename)[0]+'_kapur_k'+str(Clases)+'.eps', imagen2, cmap='gray')
- #plt.close()
-
-# fig = plt.figure()
-# filename = 'images/'+x.rstrip()
-# imagen2 = GeneralizedOtsuDE('images/'+x.rstrip(), Clases, PopulationSize, NIterations)
-# plt.imsave(os.path.splitext(filename)[0]+'_OtsuDE_k'+str(Clases)+'.eps', imagen2, cmap='gray')
-# 
-# plt.close()
-
-# fig = plt.figure()
-# filename = 'images/'+x.rstrip()
-# imagen2 = GeneralizedOtsuGradient('images/'+x.rstrip(), Clases, NIterations)
-# plt.imsave(os.path.splitext(filename)[0]+'_OtsuGradient_k'+str(Clases)+'.eps', imagen2, cmap='gray')
-# plt.close()
-#
-# fig = plt.figure()
-# filename = 'images/'+x.rstrip()
-# imagen2 = GeneralizedOtsuBumda('images/'+x.rstrip(), Clases, PopulationSize, NIterations)
-# plt.imsave(os.path.splitext(filename)[0]+'_OtsuBumda_k'+str(Clases)+'.eps', imagen2, cmap='gray')
-# plt.close()
-#
-# fig = plt.figure()
-# filename = 'images/'+x.rstrip()
-# imagen2 = GeneralizedOtsuDEEDM('images/'+x.rstrip(), Clases, PopulationSize, NIterations)
-# plt.imsave(os.path.splitext(filename)[0]+'_OtsuDEEM_k'+str(Clases)+'.eps', imagen2, cmap='gray')
-# plt.close()
-
-
- exit(0)
-
+  filename = 'images/'+x.rstrip()
+  imagen2, obj = GeneralizedOtsuBumda('images/'+x.rstrip(), Clases, PopulationSize, NIterations)
+  #plt.imsave(os.path.splitext(filename)[0]+'_OtsuBumda_k'+str(Clases)+'.eps', imagen2, cmap='gray')
+  dataPSNR[2, rep] = PSNR(imagen2, imagenref)
+  dataSSIM[2, rep] = SSIM(imagen2, imagenref)
+  dataobj[2, rep] = obj
+ 
+  filename = 'images/'+x.rstrip()
+  imagen2, obj = GeneralizedOtsuDEEDM('images/'+x.rstrip(), Clases, PopulationSize, NIterations)
+  #plt.imsave(os.path.splitext(filename)[0]+'_OtsuDEEM_k'+str(Clases)+'.eps', imagen2, cmap='gray')
+  dataPSNR[3, rep] = PSNR(imagen2, imagenref)
+  dataSSIM[3, rep] = SSIM(imagen2, imagenref)
+  dataobj[3, rep] = obj
+ for k in range(0, NAlgorithms):
+   AveragePSNR[k, cont] = np.average(dataPSNR[k,:])
+   AverageObjective[k, cont] = np.average(dataobj[k,:])
+   AverageSSIM[k, cont] = np.average(dataSSIM[k,:])
+ cont +=1
+ print str(np.average(dataPSNR[0,:])) + " " +str(np.average(dataPSNR[1,:]))+" "+str(np.average(dataPSNR[2,:])) + " " +str(np.average(dataPSNR[3,:]))
+ print str(np.average(dataSSIM[0,:])) + " " +str(np.average(dataSSIM[1,:]))+" "+str(np.average(dataSSIM[2,:])) + " " +str(np.average(dataSSIM[3,:]))
+ print str(np.average(dataobj[0,:])) + " " +str(np.average(dataobj[1,:]))+" "+str(np.average(dataobj[2,:])) + " " +str(np.average(dataobj[3,:]))
+print str(np.average(AveragePSNR[0,:])) + " " +str(np.average(AveragePSNR[1,:]))+" "+str(np.average(AveragePSNR[2,:])) + " " +str(np.average(AveragePSNR[3,:]))
+print str(np.average(AverageSSIM[0,:])) + " " +str(np.average(AverageSSIM[1,:]))+" "+str(np.average(AverageSSIM[2,:])) + " " +str(np.average(AverageSSIM[3,:]))
+print str(np.average(AverageObjective[0,:])) + " " +str(np.average(AverageObjective[1,:]))+" "+str(np.average(AverageObjective[2,:])) + " " +str(np.average(AverageObjective[3,:]))
 
  #imagenref = misc.imread('BD1/'+x.rstrip()+'_Reference.jpg', flatten=True, mode='I')
  #imagenref = misc.imread('BD1/'+x.rstrip()+'.jpg', flatten=True, mode='I')
@@ -81,9 +107,9 @@ for x in f:
 
 
 ####################PLOTTING LANDSCAPE...###########################
-f = open('files', "r")
-#in each coordinate...
-for x in f:
- LandScapeOtsu('images/'+x.rstrip(), 2)
- LandScapeKapur('images/'+x.rstrip(), 2)
-
+#f = open('files', "r")
+##in each coordinate...
+#for x in f:
+# LandScapeOtsu('images/'+x.rstrip(), 2)
+# LandScapeKapur('images/'+x.rstrip(), 2)
+#

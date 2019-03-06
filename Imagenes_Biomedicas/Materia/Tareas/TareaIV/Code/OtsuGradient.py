@@ -41,7 +41,6 @@ def GradientDescentMethod(minv, maxv, Mt, AccumPi, AccumiPi, dimension, maxite):
   optX = np.zeros(dimension+1)
   optX[0] = ObjectiveFunction(X, minv, maxv, Mt, AccumPi, AccumiPi)
   optX[1:dimension+1] = np.sort(X.astype(int))
-  print optX
   return optX
 
 def GeneralizedOtsuGradient(filename, Classes, maxite):
@@ -72,5 +71,5 @@ def GeneralizedOtsuGradient(filename, Classes, maxite):
  combinationThresholds = np.zeros(Classes-1)
  optX = GradientDescentMethod( minv, maxv, Mt, AccumPi, AccumiPi, Classes-1, maxite) 
  ReconstructionImage(img, optX)
- return img
+ return img, optX[0]
 

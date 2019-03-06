@@ -93,7 +93,7 @@ def OptimizationDEEDM(npop, Niterations, minv, maxv, Mt, AccumPi, AccumiPi, dime
   ##Elite...
   databest = np.zeros(dimension)
   bestFitness = -10000000
-  InitialminimumDistance = np.sqrt(dimension)*0.2
+  InitialminimumDistance = np.sqrt(dimension)*0.001
   #evaluation..
   for target in range(0, npop):
    evaluationsTarget[target] = ObjectiveFunction(Ptarget[target,:], minv, maxv, Mt, AccumPi, AccumiPi)
@@ -172,5 +172,5 @@ def GeneralizedOtsuDEEDM(filename, Classes, PopulationSize, Niterations):
  optX = OptimizationDEEDM( PopulationSize, Niterations, minv, maxv, Mt, AccumPi, AccumiPi, Classes-1)
 
  ReconstructionImage(img, optX)
- return img
+ return img, optX[0]
 

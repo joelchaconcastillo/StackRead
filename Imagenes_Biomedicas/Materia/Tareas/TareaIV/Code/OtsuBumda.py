@@ -33,7 +33,7 @@ def GeneralizedOtsuBumda(filename, Classes, PopulationSize, Niterations):
  combinationThresholds = np.zeros(Classes-1)
  optX = OptimizationBumda( Niterations, PopulationSize, Classes-1,minv, maxv, Mt, AccumPi, AccumiPi)
  ReconstructionImage(img, optX)
- return img
+ return img, optX[0]
 
 def OptimizationBumda(Maxite, N, Dimension, minv, maxv, Mt, AccumPi, AccumiPi):
  #Initialization

@@ -88,7 +88,6 @@ def GeneralizedOtsuDE(filename, Classes, PopulationSize, Niterations):
 
  combinationThresholds = np.zeros(Classes-1)
  optX = OptimizationDE(PopulationSize, Niterations, minv, maxv, Mt, AccumPi, AccumiPi, Classes-1)
- print optX
  ReconstructionImage(img, optX)
- return img
+ return img, optX[0]
 

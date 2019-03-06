@@ -26,14 +26,25 @@ def ObjectiveFunction(combinationThresholds, minv, maxv, Mt, AccumPi, AccumiPi):
   return Wi.dot(np.power(Mu-Mt,2))
 
 def ReconstructionImage(img, optX):
- delta = 254.0/(optX.size+1)
- intensityInterval = delta
  [Width, Height] = np.shape(img)
  img2 = np.copy(img)
- img[ img2 <= optX[1]] = intensityInterval
+ img[ img2 <= optX[1]] = 0# intensityInterval
  for i in range(2, optX.size):
-   intensityInterval +=delta
-   img[np.logical_and((optX[i-1] < img2),(optX[i] >= img2))  ] = int(intensityInterval)
- intensityInterval +=delta
- img[ img2 > optX[-1]] =intensityInterval
+   img[np.logical_and((optX[i-1] < img2),(optX[i] >= img2))  ] = (optX[i]+optX[i-1])/2 #int(intensityInterval)
+ img[ img2 > optX[-1]] = 254#intensityInterval
  
+def PSNR(img, imgRef):
+ [Width, Height] = np.shape(img)
+ MSE =  np.sum(np.power(img - imgRef,2))/(Width*Height)
+ return 10*np.log( (255*255)/MSE)/np.log(10)
+def SSIM(img, imgRef):
+ MuI = np.mean(img.flatten()) 
+ MuJ = np.mean(imgRef.flatten()) 
+ SigmaI = np.std(img.flatten()) 
+ SigmaJ = np.std(imgRef.flatten()) 
+ SigmaIJ = np.corrcoef(img.flatten(), imgRef.flatten())[0,1]
+ SigmaIJ = np.cov(img.flatten(), imgRef.flatten())[0,1]
+ C1 = 6.5025
+ C2 = 58.5225
+ return ((2.0*MuI*MuJ+C1)*(2.0*SigmaIJ + C2))/(  ( MuI*MuI + MuJ*MuJ + C1 )*( SigmaI*SigmaI + SigmaJ*SigmaJ + C2 ))
+  
