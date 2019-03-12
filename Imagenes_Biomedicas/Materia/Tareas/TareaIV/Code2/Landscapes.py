@@ -6,6 +6,7 @@ import numpy as np
 import random
 import os
 from mpl_toolkits.mplot3d import Axes3D
+from Global import PSNR, SSIM, ReconstructionImage
 
 def ObjectiveFunctionOtsu(combinationThresholds, minv, maxv, Mt, AccumPi, AccumiPi):
   ###check repetitions....
@@ -53,6 +54,8 @@ def ObjectiveFunctionKapur(combinationThresholds, minv, maxv, Mt, AccumPi, Accum
 def LandScapeOtsu(filename, Classes):
  img = misc.imread(filename, flatten=True, mode='I')
  img = img.astype(int)
+ imgref = misc.imread(filename, flatten=True, mode='I')
+ imgref = img.astype(int)
  [Width, Height] = np.shape(img)
  imgFlat = img.flatten()
  minv = np.min(img)
@@ -80,9 +83,18 @@ def LandScapeOtsu(filename, Classes):
 ###checking Landscape...
  for i in range(minv+10, maxv-1, 5):
    for j in range(minv+10, maxv-1, 5):
+    img = misc.imread(filename, flatten=True, mode='I')
+    img = img.astype(int)
     x = np.append(x, i)
     y = np.append(y, j)
-    z = np.append(z, ObjectiveFunctionOtsu([i,j+1], minv, maxv, Mt, AccumPi, AccumiPi) - ObjectiveFunctionOtsu([i,j-1], minv, maxv, Mt, AccumPi, AccumiPi) )
+    #z = np.append(z, ObjectiveFunctionOtsu([i,j], minv, maxv, Mt, AccumPi, AccumiPi))
+    optX = np.zeros(3)
+    optX[0] = -1
+    optX[1] = i
+    optX[2] = j
+    ReconstructionImage(img, optX)
+    z = np.append(z, PSNR(img, imgref))#np.append(z, ObjectiveFunctionKapur([i,j], minv, maxv, Mt, AccumPi, AccumiPi))
+    #z = np.append(z, ObjectiveFunctionOtsu([i,j+1], minv, maxv, Mt, AccumPi, AccumiPi) - ObjectiveFunctionOtsu([i,j-1], minv, maxv, Mt, AccumPi, AccumiPi) )
  fig = plt.figure()
  ax = fig.gca(projection='3d')
  ax.plot_trisurf(x, y, z, linewidth=0.2, antialiased=True)

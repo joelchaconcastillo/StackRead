@@ -6,6 +6,32 @@ import numpy as np
 import random
 from Global import ObjectiveFunction, ReconstructionImage, ObjectiveFunctionKapur
 
+def GradientOtsu(X, minv, maxv, Mt, AccumPi, AccumiPi):
+    gradient =np.zeros(X.size)
+    for d in range(0, X.size):
+     Xi1 = np.copy(X)
+     Xi2 = np.copy(X) 
+     Xi1[d] +=1
+     Xi2[d] -=1
+     if Xi1[d] > maxv:
+	Xi1[d]=minv
+     if Xi2[d] < minv:
+	Xi2[d]=maxv
+     gradient[d] = (ObjectiveFunction(Xi1, minv, maxv, Mt, AccumPi, AccumiPi)-ObjectiveFunction(Xi2, minv, maxv, Mt, AccumPi, AccumiPi))
+    return gradient.dot(gradient)
+def GradientKapur(X, minv, maxv, Mt, AccumPi, AccumPilogPi):
+    gradient =np.zeros(X.size)
+    for d in range(0, X.size):
+     Xi1 = np.copy(X)
+     Xi2 = np.copy(X) 
+     Xi1[d] +=1
+     Xi2[d] -=1
+     if Xi1[d] > maxv:
+	Xi1[d]=minv
+     if Xi2[d] < minv:
+	Xi2[d]=maxv
+     gradient[d] = (ObjectiveFunctionKapur(Xi1, minv, maxv, Mt, AccumPi, AccumPilogPi)-ObjectiveFunction(Xi2, minv, maxv, Mt, AccumPi, AccumPilogPi))
+    return gradient.dot(gradient)
 
 
 def OptimizationDE(npop, Niterations, minv, maxv, Mt, AccumPi, AccumiPi, AccumPilogPi, dimension):
@@ -20,9 +46,11 @@ def OptimizationDE(npop, Niterations, minv, maxv, Mt, AccumPi, AccumiPi, AccumPi
    #print pop
    #pop[target,:] = np.sort(pop[target,:])
    if target < npop/2:
-    evaluations[target] = ObjectiveFunction(pop[target,:], minv, maxv, Mt, AccumPi, AccumiPi)
+    #evaluations[target] = ObjectiveFunction(pop[target,:], minv, maxv, Mt, AccumPi, AccumiPi)
+    evaluations[target] = GradientOtsu(pop[target,:], minv, maxv, Mt, AccumPi, AccumiPi) + GradientKapur(pop[target,:], minv, maxv, Mt, AccumPi, AccumPilogPi)
    if target >= npop/2:
-    evaluations[target] = ObjectiveFunctionKapur(pop[target,:], minv, maxv, Mt, AccumPi, AccumPilogPi)
+    evaluations[target] = GradientOtsu(pop[target,:], minv, maxv, Mt, AccumPi, AccumiPi) + GradientKapur(pop[target,:], minv, maxv, Mt, AccumPi, AccumPilogPi)
+    #evaluations[target] = ObjectiveFunctionKapur(pop[target,:], minv, maxv, Mt, AccumPi, AccumPilogPi)
    if target < npop/2:
      if evaluations[target] > bestFitness[0]: 
        bestFitness[0] = evaluations[target]
@@ -58,9 +86,11 @@ def OptimizationDE(npop, Niterations, minv, maxv, Mt, AccumPi, AccumiPi, AccumPi
 	if trial[d] < minv:
 	 trial[d] = maxv-1
         if target < npop/2:
-         objtrial = ObjectiveFunction(trial, minv, maxv, Mt, AccumPi, AccumiPi)
+    #     objtrial = ObjectiveFunction(trial, minv, maxv, Mt, AccumPi, AccumiPi)
+    	  objtrial = GradientOtsu(trial, minv, maxv, Mt, AccumPi, AccumiPi) + GradientKapur(trial, minv, maxv, Mt, AccumPi, AccumPilogPi)
         if target >= npop/2:
-         objtrial = ObjectiveFunctionKapur(trial, minv, maxv, Mt, AccumPi, AccumPilogPi)
+    	  objtrial = GradientOtsu(trial, minv, maxv, Mt, AccumPi, AccumiPi) + GradientKapur(trial, minv, maxv, Mt, AccumPi, AccumPilogPi)
+         #objtrial = ObjectiveFunctionKapur(trial, minv, maxv, Mt, AccumPi, AccumPilogPi)
 
        ##Selection
        if objtrial > evaluations[target]:

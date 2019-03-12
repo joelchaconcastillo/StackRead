@@ -62,7 +62,7 @@ def ReconstructionImage(img, optX):
  
 def PSNR(img, imgRef):
  [Width, Height] = np.shape(img)
- MSE =  np.sum(np.power(img - imgRef,2))/(Width*Height)
+ MSE =  np.sum(np.power(img - imgRef,2))/(Width*Height)+0.00001
  return 10*np.log( (255*255)/MSE)/np.log(10)
 def SSIM(img, imgRef):
  MuI = np.mean(img.flatten()) 
