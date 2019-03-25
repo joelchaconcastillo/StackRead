@@ -7,35 +7,47 @@ from sklearn import metrics
 
 fprM = np.zeros(255)
 tprM = np.zeros(255)
-P = 0
-N = 0
+P = np.zeros(255)
+N = np.zeros(255)
 
 for nim in range (1, 21):
  imgref = cv2.imread('BD_20_Angios/'+str(nim)+'_gt.png',0)
- img = cv2.imread('BD_20_Angios/'+str(nim)+'.png',0)
- #kernel =  np.ones((5,5),np.uint8)# cv2.getStructuringElement(cv2.MORPH_,(19,19))
- kernel = cv2.getStructuringElement(0,(19,19))
+ img = 255-cv2.imread('BD_20_Angios/'+str(nim)+'.png',0)
+ 
+ kernel =  np.ones((49,49),np.uint8)# cv2.getStructuringElement(cv2.MORPH_,(19,19))
+ kernel = cv2.getStructuringElement(2,(19,19))
  #kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (19,19))
-  #sz = 19
+ #sz = 19
  #kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2*sz-1, 2*sz-1))
  #img = cv2.erode(mask,kernel,iterations = 1)
- img = cv2.morphologyEx(img, cv2.MORPH_BLACKHAT, kernel)
-#ret2,th2 = cv2.threshold(img,0,255,cv2.THRESH_OTSU)
- imgref[imgref>0]=1
- P += np.sum(imgref.flatten())
- N += imgref.flatten().size - P
+ img = cv2.morphologyEx(img, cv2.MORPH_TOPHAT, kernel)
+ plt.imshow(img, 'gray')
+ plt.show()
+# ret2,th2 = cv2.threshold(img,0,255,cv2.THRESH_OTSU)
+ imgref=imgref/255
+# P += np.sum(imgref.flatten())
+# N += imgref.flatten().size - P
  for i in range(0,255):
-  ret2,th2 = cv2.threshold(img,i,255, cv2.THRESH_BINARY)
-  th2[th2>0]=1
+ # ret2,th2 = cv2.threshold(img,i,255, cv2.THRESH_BINARY)
+  th2 = np.copy(img)
+  th2 = th2.flatten()
+  th2[th2<i]=0
+  th2[th2>=i]=1
+  P1 = np.sum(th2.flatten())
+  N1 = th2.flatten().size - P1
   tn, fp, fn, tp = metrics.confusion_matrix(imgref.flatten(), th2.flatten()).ravel()
+  P[i] += tp+fn
+  N[i] += fp+tn
   fprM[i] += fp
   tprM[i] += tp
-
 print metrics.auc(fprM/(N), tprM/(P), reorder=True)
-
-#cv2.imshow('th2',th2)
-#cv2.waitKey(0)
-#cv2.destroyAllWindows() 
+plt.plot(fprM/(N), tprM/(P))
+plt.ylim(0, 1.1)
+plt.xlim(0, 1.1)
+plt.show()
+## cv2.imshow('th2',th2)
+## cv2.waitKey(0)
+## cv2.destroyAllWindows() 
 
 
 
@@ -49,7 +61,7 @@ print metrics.auc(fprM/(N), tprM/(P), reorder=True)
 
 ###roc_auc = dict()
 ###
-####fpr1, tpr1, thresholds = metrics.roc_curve(th2.flatten(), imgref.flatten())
+#fpr1, tpr1, thresholds = metrics.roc_curve(th2.flatten(), imgref.flatten())
 ###
 #plt.plot(fpr, tpr)
 #plt.show()
