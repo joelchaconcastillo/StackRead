@@ -17,7 +17,7 @@ def exploreImage(x, y, grayref, cont, imagen, imagenReference):
     return
    if y >= Height-1:
     return 0
-   if abs(grayref-imagen[x][y]) > 25:
+   if abs(grayref-imagen[x][y]) > 17:
     return 0
    if imagenReference[x][y] == 254:
     return 0
@@ -33,7 +33,7 @@ def exploreImage(x, y, grayref, cont, imagen, imagenReference):
    exploreImage(x, y-1,  grayref, cont+1, imagen, imagenReference)
    return 0
 def generating(basenamefile):
- infile = str(basenamefile)+'.jpg'
+ infile = str(basenamefile)+'.png'
  imagen = misc.imread(infile, flatten=True, mode='I')
  imagenReference = misc.imread(infile, flatten=True, mode='I')
  imagen = imagen.astype(int)
@@ -48,6 +48,7 @@ def generating(basenamefile):
  for x in f:
    row = x.split()
    exploreImage(int(row[1]), int(row[0]), imagen[int(row[1])][int(row[0])], 0, imagen, imagenReference) 
+ misc.imsave( "out.png", imagenReference)
  return imagenReference
-# misc.imsave(str(sys.argv[2]), imagenReference)
 
+generating('1')
