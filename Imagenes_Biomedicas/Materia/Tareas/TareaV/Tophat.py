@@ -34,7 +34,7 @@ def evaluateKernel(kernel):
    imgref=imgref/255
    indexes = np.unique(img.flatten())
    
-   for i in range(0, 254):
+   for i in range(0, 255):
     ret2,th2 = cv2.threshold(img,i,255, cv2.THRESH_BINARY)
     th2 =th2.flatten()/255
     tp = np.sum(np.logical_and(th2, imgref))
@@ -48,7 +48,7 @@ def evaluateKernel(kernel):
   #return auc_from_fpr_tpr(fprM/(N+0.0000001), tprM/(P+0.000001), True)
   return -metrics.auc(FP/(FPTN+0.01), TP/(TPFN+0.01), reorder=True)
 
-def evaluateKernelbyImage(kernel, index):
+def evaluateKernelbyImage(kernel, Nsample):
   FP = np.zeros(255)
   TP = np.zeros(255)
   FPTN = np.zeros(255)
@@ -56,36 +56,31 @@ def evaluateKernelbyImage(kernel, index):
   kernel = np.uint8(kernel)
 #  kernel =  np.ones((49,49),np.uint8)# cv2.getStructuringElement(cv2.MORPH_,(19,19))
 #  kernel = cv2.getStructuringElement(2,(29,29))
-  for nim in range (index, index+1):
+  for Lnim in range (0, Nsample.size):
+   nim = Nsample[Lnim]
    imgref = cv2.imread('BD_20_Angios/'+str(nim)+'_gt.png',0).flatten()
    img = cv2.imread('BD_20_Angios/'+str(nim)+'.png',0)
 
    img = cv2.morphologyEx(img, cv2.MORPH_BLACKHAT, kernel)
   
 
+  # ret2,th2 = cv2.threshold(img,0,255,cv2.THRESH_OTSU)
    imgref=imgref/255
-   scores = np.zeros(imgref.size)
-  # P += np.sum(imgref.flatten())
-  # N += imgref.flatten().size - P
-   for i in range(0,255):
+   indexes = np.unique(img.flatten())
+   
+   for i in range(0, 255):
     ret2,th2 = cv2.threshold(img,i,255, cv2.THRESH_BINARY)
     th2 =th2.flatten()/255
     tp = np.sum(np.logical_and(th2, imgref))
     tn = np.sum(np.logical_and(np.logical_not(th2), np.logical_not(imgref)))
     fn = np.sum(np.logical_and(np.logical_not(th2), imgref))
     fp = np.sum(np.logical_and(th2, np.logical_not(imgref)))
-    #tn, fp, fn, tp = metrics.confusion_matrix(imgref.flatten(), th2.flatten()).ravel()
     TPFN[i] += tp+fn
     FPTN[i] += fp+tn
     FP[i] += fp
     TP[i] += tp
-#  print -metrics.auc(fprM/(N+0.0000001), tprM/(P+0.000001), reorder=True)
   #return auc_from_fpr_tpr(fprM/(N+0.0000001), tprM/(P+0.000001), True)
-#  print auc_from_fpr_tpr(FP/(FPTN+0.01), TP/(TPFN+0.01), True)
-  return auc_from_fpr_tpr(FP/(FPTN+0.01), TP/(TPFN+0.01), True)
-#  print metrics.roc_auc_score(imgref.flatten(),  scores/indexes.size)
-#  return -metrics.auc(fprM/(N+0.0000001), tprM/(P+0.000001), reorder=True)
-
+  return -metrics.auc(FP/(FPTN+0.01), TP/(TPFN+0.01), reorder=True)
 
 def improving(kernel, obj):
    bestkernel = np.copy(kernel)
@@ -94,10 +89,13 @@ def improving(kernel, obj):
    side = int(math.sqrt(size))
    selected = np.zeros(size)
    window = np.random.randint(0, 5)
-   for k in range(0,300):
+   indexImage = np.random.randint(1, 21, 2)
+   bestobj= evaluateKernelbyImage(kernel.reshape(side,side), indexImage)
+   maxrep = 50
+   for k in range(0,maxrep):
      current = np.copy(bestkernel)
      currentobj = bestobj
-     for z in range(0, np.random.randint(0, 3)):
+     for z in range(0, np.random.randint(0, 2)):
       bit = np.random.randint(0, 2)
    #select a random bit..
       x = np.random.randint(0, side)
@@ -115,15 +113,22 @@ def improving(kernel, obj):
           else:
     	    current[choords ] = 1
     	    current[choords ] = bit
-     currentobj = evaluateKernel(current.reshape(side,side))
+     currentobj = evaluateKernelbyImage(current.reshape(side,side), indexImage)
      if currentobj < bestobj:
         k=0
 	bestkernel = np.copy(current)
 	bestobj = currentobj 
+        maxrep=200
         print "improved  " + str(currentobj)
      else:
 	window = np.random.randint(0, 5)
-   return bestkernel, bestobj
+
+   bestobj = evaluateKernel(bestkernel.reshape(side,side))
+   print "best..."+str(bestobj) 
+   if bestobj < obj:
+    return bestkernel, bestobj
+   else :
+    return kernel, obj
 
 def evaluateKernelEntropy(kernel):
   fprM = np.zeros(255)
@@ -157,11 +162,9 @@ prob = np.ones(sizeStructure)*0.5
 rocvalues = np.zeros(pop)
 maxite = 100
 for k in range(0,3): 
- print k
  kernel[k,:] = cv2.getStructuringElement(k,(size,size)).flatten()
  rocvalues[k] = evaluateKernel(kernel[k].astype(int).reshape(size, size))
  print rocvalues[k]
- exit(0)
 for i in range(0, maxite):
   print i
   for k in range(4,pop):
@@ -172,8 +175,10 @@ for i in range(0, maxite):
     rocvalues[k] = evaluateKernel(kernel[k].astype(int).reshape(size, size))
 #    rocvalues[k] = evaluateKernelEntropy(kernel[k].astype(int).reshape(size, size))
   #improving 
-  #for k in range(0,pop):
-  #  kernel[k,: ], rocvalues[k] = improving(kernel[k,:], rocvalues[k])
+  for k in range(0,pop):
+    print rocvalues[k]
+    kernel[k,: ], rocvalues[k] = improving(kernel[k,:], rocvalues[k])
+    print rocvalues[k]
   #Select the bests roc curve...
   bestIndexes = np.argsort(rocvalues)
   #learning probabilities...
@@ -181,7 +186,7 @@ for i in range(0, maxite):
   #saving elite
   kernel[3,:] = np.copy(kernel[bestIndexes[0],:])
   rocvalues[3] = rocvalues[bestIndexes[0]]
-  print str( rocvalues[bestkernel])
+  print str( rocvalues[bestIndexes])
   print "------ " + str( rocvalues[3])
 print evaluateKernel(kernel[3].astype(int).reshape(size, size))
 print str( rocvalues[3])
