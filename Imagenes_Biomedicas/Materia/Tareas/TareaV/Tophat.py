@@ -1,3 +1,6 @@
+from __future__ import print_function
+import sys
+
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
@@ -5,6 +8,9 @@ from sklearn import metrics
 import itertools
 import operator
 import math
+
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
 #from skimage.morphology import square
 def auc_from_fpr_tpr(fpr, tpr, trapezoid=False):
     inds = [i for (i, (s, e)) in enumerate(zip(fpr[: -1], fpr[1: ])) if s != e] + [len(fpr) - 1]
@@ -91,8 +97,7 @@ def improving(kernel, obj):
    window = np.random.randint(0, 5)
    indexImage = np.random.randint(1, 21, 2)
    bestobj= evaluateKernelbyImage(kernel.reshape(side,side), indexImage)
-   maxrep = 50
-   for k in range(0,maxrep):
+   for k in range(0,300):
      current = np.copy(bestkernel)
      currentobj = bestobj
      for z in range(0, np.random.randint(0, 2)):
@@ -118,13 +123,12 @@ def improving(kernel, obj):
         k=0
 	bestkernel = np.copy(current)
 	bestobj = currentobj 
-        maxrep=200
-        print "improved  " + str(currentobj)
+        eprint ("improved  " + str(currentobj))
      else:
 	window = np.random.randint(0, 5)
 
    bestobj = evaluateKernel(bestkernel.reshape(side,side))
-   print "best..."+str(bestobj) 
+   eprint ("best..."+str(bestobj))
    if bestobj < obj:
     return bestkernel, bestobj
    else :
@@ -151,7 +155,7 @@ def evaluateKernelEntropy(kernel):
    return np.sum(pA*np.log2(pA+0.000001))
 
 #Initialize probability vector...
-size = 19
+size = 100
 #kernel = cv2.getStructuringElement(2,(size,size)).flatten()
 pop = 10
 NBest = 5
@@ -164,9 +168,9 @@ maxite = 100
 for k in range(0,3): 
  kernel[k,:] = cv2.getStructuringElement(k,(size,size)).flatten()
  rocvalues[k] = evaluateKernel(kernel[k].astype(int).reshape(size, size))
- print rocvalues[k]
+ eprint (rocvalues[k])
 for i in range(0, maxite):
-  print i
+  eprint (i)
   for k in range(4,pop):
     #Sampling...
     randomN = np.random.uniform(0,1, sizeStructure)
@@ -176,9 +180,9 @@ for i in range(0, maxite):
 #    rocvalues[k] = evaluateKernelEntropy(kernel[k].astype(int).reshape(size, size))
   #improving 
   for k in range(0,pop):
-    print rocvalues[k]
+    eprint (rocvalues[k])
     kernel[k,: ], rocvalues[k] = improving(kernel[k,:], rocvalues[k])
-    print rocvalues[k]
+    eprint (rocvalues[k])
   #Select the bests roc curve...
   bestIndexes = np.argsort(rocvalues)
   #learning probabilities...
@@ -186,11 +190,11 @@ for i in range(0, maxite):
   #saving elite
   kernel[3,:] = np.copy(kernel[bestIndexes[0],:])
   rocvalues[3] = rocvalues[bestIndexes[0]]
-  print str( rocvalues[bestIndexes])
-  print "------ " + str( rocvalues[3])
-print evaluateKernel(kernel[3].astype(int).reshape(size, size))
-print str( rocvalues[3])
-print kernel[3,:]
+  eprint (str( rocvalues[bestIndexes]))
+  eprint ("------ " + str( rocvalues[3]))
+eprint (evaluateKernel(kernel[3].astype(int).reshape(size, size)))
+eprint (str( rocvalues[3]))
+eprint (kernel[3,:])
 
 
 #print evaluateKernel(kernel)
