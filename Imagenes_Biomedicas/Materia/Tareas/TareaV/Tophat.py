@@ -27,32 +27,57 @@ def evaluateKernel(kernel):
   FPTN = np.zeros(255)
   TPFN = np.zeros(255)
   kernel = np.uint8(kernel)
-#  kernel =  np.ones((49,49),np.uint8)# cv2.getStructuringElement(cv2.MORPH_,(19,19))
 #  kernel = cv2.getStructuringElement(2,(29,29))
-  for nim in range (1, 21):
+  for nim in range (1, 2):
    imgref = cv2.imread('BD_20_Angios/'+str(nim)+'_gt.png',0).flatten()
    img = cv2.imread('BD_20_Angios/'+str(nim)+'.png',0)
+   for l in range(0,3):
+    img = cv2.imread('BD_20_Angios/'+str(nim)+'.png',0)
+#    kernel =  cv2.getStructuringElement(0,(19,19))
+    img = cv2.morphologyEx(img, cv2.MORPH_BLACKHAT, kernel)
+ #   ret2,img= cv2.threshold(img,10,255, cv2.THRESH_BINARY)
+  #  plt.imshow(img, cmap='gray')
+   # plt.show()
 
-   img = cv2.morphologyEx(img, cv2.MORPH_BLACKHAT, kernel)
+   
   
 
-  # ret2,th2 = cv2.threshold(img,0,255,cv2.THRESH_OTSU)
+   #ret2,th2 = cv2.threshold(img,0,255,cv2.THRESH_OTSU)
+  # for i in range(1, 255):
+  #  ret2,th2 = cv2.threshold(img,i,255, cv2.THRESH_BINARY)
+  #  plt.imshow(th2, cmap='gray')
+  #  plt.show()
+
    imgref=imgref/255
    indexes = np.unique(img.flatten())
    
-   for i in range(0, 255):
+  minv = 100000000
+  tt = -1
+  for i in range(0, 255):
     ret2,th2 = cv2.threshold(img,i,255, cv2.THRESH_BINARY)
     th2 =th2.flatten()/255
     tp = np.sum(np.logical_and(th2, imgref))
     tn = np.sum(np.logical_and(np.logical_not(th2), np.logical_not(imgref)))
     fn = np.sum(np.logical_and(np.logical_not(th2), imgref))
     fp = np.sum(np.logical_and(th2, np.logical_not(imgref)))
-    TPFN[i] += tp+fn
-    FPTN[i] += fp+tn
-    FP[i] += fp
-    TP[i] += tp
-  #return auc_from_fpr_tpr(fprM/(N+0.0000001), tprM/(P+0.000001), True)
-  return -metrics.auc(FP/(FPTN+0.01), TP/(TPFN+0.01), reorder=True)
+    TPFN[i] += tp+fn+0.0
+    FPTN[i] += fp+tn+0.0
+    FP[i] += fp+0.0
+    TP[i] += tp+0.0
+    sensitivity = (tp/float(tp+fn))
+    specifity = (fp/float(fp+tn))
+    dis = math.sqrt(  (1.0-sensitivity)*(1.0-sensitivity)  + (specifity)*(specifity))
+    if dis < minv:
+       minv = dis
+       tt = i 
+  FPR = np.append(FP/FPTN,[0.0,1.0])
+  TPR = np.append(TP/TPFN,[1.0,0.0])
+#  print(TP/(TPFN))
+#  print(FP/(FPTN))
+#  print("------")
+#  print(np.trapz( FPR,TPR))
+ # return auc_from_fpr_tpr(FPR, TPR, True)
+  return -metrics.auc(FPR, TPR, reorder=True), tt
 
 def evaluateKernelbyImage(kernel, Nsample):
   FP = np.zeros(255)
@@ -126,8 +151,8 @@ def improving(kernel, obj):
         eprint ("improved  " + str(currentobj))
      else:
 	window = np.random.randint(0, 5)
-
-   bestobj = evaluateKernel(bestkernel.reshape(side,side))
+   t=0
+   bestobj,t = evaluateKernel(bestkernel.reshape(side,side))
    eprint ("best..."+str(bestobj))
    if bestobj < obj:
     return bestkernel, bestobj
@@ -155,7 +180,7 @@ def evaluateKernelEntropy(kernel):
    return np.sum(pA*np.log2(pA+0.000001))
 
 #Initialize probability vector...
-size = 100
+size = 50
 #kernel = cv2.getStructuringElement(2,(size,size)).flatten()
 pop = 10
 NBest = 5
@@ -164,19 +189,21 @@ kernel = np.zeros((pop, sizeStructure))
 bestkernel = np.zeros(sizeStructure)
 prob = np.ones(sizeStructure)*0.5
 rocvalues = np.zeros(pop)
-maxite = 100
-for k in range(0,3): 
+tt = np.zeros(pop)
+maxite = 30
+for k in range(0,1): 
  kernel[k,:] = cv2.getStructuringElement(k,(size,size)).flatten()
- rocvalues[k] = evaluateKernel(kernel[k].astype(int).reshape(size, size))
+ print (kernel[k].reshape(size,size))
+ rocvalues[k], tt[k]= evaluateKernel(kernel[k,:].astype(int).reshape(size, size))
  eprint (rocvalues[k])
 for i in range(0, maxite):
   eprint (i)
-  for k in range(4,pop):
+  for k in range(1,pop):
     #Sampling...
     randomN = np.random.uniform(0,1, sizeStructure)
     kernel[k, randomN < prob] = 1
     kernel[k, randomN >= prob] = 0
-    rocvalues[k] = evaluateKernel(kernel[k].astype(int).reshape(size, size))
+    rocvalues[k],tt[k] = evaluateKernel(kernel[k].astype(int).reshape(size, size))
 #    rocvalues[k] = evaluateKernelEntropy(kernel[k].astype(int).reshape(size, size))
   #improving 
   for k in range(0,pop):
@@ -190,11 +217,22 @@ for i in range(0, maxite):
   #saving elite
   kernel[3,:] = np.copy(kernel[bestIndexes[0],:])
   rocvalues[3] = rocvalues[bestIndexes[0]]
+  tt[3] = tt[bestIndexes[0]]
   eprint (str( rocvalues[bestIndexes]))
   eprint ("------ " + str( rocvalues[3]))
 eprint (evaluateKernel(kernel[3].astype(int).reshape(size, size)))
 eprint (str( rocvalues[3]))
 eprint (kernel[3,:])
+
+
+
+
+img = cv2.imread('BD_20_Angios/1.png',0)
+img = cv2.morphologyEx(img, cv2.MORPH_BLACKHAT, np.uint8(kernel[3,:]).reshape(size,size))
+ret2,img= cv2.threshold(img,tt[3],255, cv2.THRESH_BINARY)
+plt.imshow(img, cmap='gray')
+plt.show()
+
 
 
 #print evaluateKernel(kernel)
