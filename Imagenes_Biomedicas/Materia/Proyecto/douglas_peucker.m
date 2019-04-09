@@ -1,4 +1,20 @@
 function [result]= douglas_peucker(Points,epsilon)
+
+
+
+
+
+
+
+
+
+
+
+
+%return
+
+
+
 % The Ramer�Douglas�Peucker algorithm (RDP) is an algorithm for reducing 
 % the number of points in a curve that is approximated by a series of 
 % points. The initial form of the algorithm was independently suggested 
