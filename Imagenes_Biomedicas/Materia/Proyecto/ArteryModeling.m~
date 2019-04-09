@@ -15,7 +15,7 @@ function [ outImg ] = ArteryModeling( Points, I )
  Partition = [];
 
  %pick up the right-bottom point
- [x,i] = min(Set(:,2));
+ [x,i] = max(Set(1,:));
  p1 = Set(i,:);
  Set(i,:) = [];
 
@@ -28,13 +28,13 @@ function [ outImg ] = ArteryModeling( Points, I )
  Set(i,:) = [];
 
 Partition = [p1;p2];
- while angle < pi
+ while angle < 90 
       Partition = [Partition;p3];
      n1 = (p3 - p1) / norm(p3 - p1);  % Normalized vectors
      n2 = (p2 - p1) / norm(p2 - p1);
-     angle = angle +acos(dot(n1, n2));  % atan2(norm(det([n2; n1])), dot(n1, n2))
-    % p1 = p2;
-     p2 = p3;
+     angle = angle + atan2(norm(det([n2; n1])), dot(n1, n2))
+     p1 = p2
+     p2 = p3
      [i, d] = dsearchn(Set, p2);
      p3 = Set(i,:);
      Set(i,:) = [];
@@ -43,10 +43,8 @@ Partition = [p1;p2];
      end
  end
  
- outImg(sub2ind(size(I),Partition(:,2),Partition(:,1))) = 1;
- imshow(outImg)
- xq = min(Partition(:,1)):max(Partition(:,1));
+ xq = min(Partition(:,2)):max(Partition(:,2));
  yq = pchip(Partition(:,1),Partition(:,2),xq);
-outImg(sub2ind(size(I),uint8(xq),uint8(yq))) = 1;
+ outImg(sub2ind(size(I),uint8(xq),uint8(yq))) = 1;
 end
 

@@ -13,17 +13,16 @@ I=skel;
 
 imPoints = I;
 imPoints(:) = 0;
-result = [];
+result 
 for i = 1:components.NumObjects
     tmp = zeros(size(I));
     tmp(components.PixelIdxList{i})=1;
    [r,c] = find(tmp);
-   result = [result douglas_peucker([transpose(c);transpose(r)], 3)]; 
+   result = [douglas_peucker([transpose(c);transpose(r)], 1)];
+   %outImg = ArteryModeling(result, I);
+   %imshow(outImg);
+   %break;
 end
-
-outImg = ArteryModeling(result, I);
-%imshow(outImg);
-  
 
 %dilatedImage = imdilate(I,strel('disk',15));
 %thinedImage = bwmorph(dilatedImage,'thin',inf);
@@ -31,7 +30,7 @@ outImg = ArteryModeling(result, I);
 %outImg = ArteryModeling(result, I)
 
 
-%imshow(imPoints)
+imshow(imPoints)
 %Vq = interp2(I,5);
 %figure
 %imagesc(Vq);
