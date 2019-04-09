@@ -28,11 +28,14 @@ function [ outImg ] = ArteryModeling( Points, I )
  Set(i,:) = [];
 
 Partition = [p1;p2];
- while angle < pi
-      Partition = [Partition;p3];
+ n2 = (p2 - p1) / norm(p2 - p1); 
+ while angle < 90
+     Partition = [Partition;p3];
      n1 = (p3 - p1) / norm(p3 - p1);  % Normalized vectors
-     n2 = (p2 - p1) / norm(p2 - p1);
-     angle = angle +acos(dot(n1, n2));  % atan2(norm(det([n2; n1])), dot(n1, n2))
+        
+     angle = (180/pi)*acos(dot(n1, n2));%atan2(norm(det([n2; n1])), dot(n1, n2));%(180/pi)*atan2(abs(det([p3-p1;p2-p1])),dot(p3-p1,p2-p1));%acos(dot(n1, n2));  % atan2(norm(det([n2; n1])), dot(n1, n2))
+     (180/pi)*acos(dot(n1, n2))
+     angle
     % p1 = p2;
      p2 = p3;
      [i, d] = dsearchn(Set, p2);

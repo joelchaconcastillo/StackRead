@@ -21,7 +21,7 @@ for i = 1:components.NumObjects
    result = [result douglas_peucker([transpose(c);transpose(r)], 3)]; 
 end
 
-outImg = ArteryModeling(result, I);
+outImg = ArteryModeling(result), I);
 %imshow(outImg);
   
 
