@@ -1,4 +1,5 @@
 
+
 groundTruth  = imread('BD_20_Angios/1_gt.png');
 
 tophatFiltered = Detection('BD_20_Angios/1.png');
