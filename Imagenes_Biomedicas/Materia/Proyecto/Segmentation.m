@@ -36,7 +36,9 @@ AUC = trapz(Y,X)
 
 I =imbinarize(tophatFiltered, mina/255);
 
+
 I = bwareaopen(I,300);
+
 I=bwpropfilt(I,'perimeter',1);
 %I = bwconncomp(I);
 end
