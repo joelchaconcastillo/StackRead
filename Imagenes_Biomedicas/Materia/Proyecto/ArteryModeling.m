@@ -4,9 +4,13 @@ function [ outImg ] = ArteryModeling( Points, I )
  %find()
  %%Dividing the points to get a good interpolation
  outImg =zeros(size(I));
- 
- outImg(sub2ind(size(I),uint8(Points(:,1)),uint8(Points(:,2)))) = 1;
+fitcknn(Points(1,:),Y,'NumNeighbors',5,'Standardize',1)
+ outImg(sub2ind(size(I),uint8(Points(1,:)),uint8(Points(2,:)))) = 1;
  imshow(outImg)
+ 
+ 
+
+return
  
  %%this procedure is for each component of the set of points...
   Setgenereal =  unique(transpose(Points),'rows');

@@ -44,9 +44,11 @@ for i = 1:components.NumObjects
    if length(r)< 1
        continue
     end
-   result = [result douglas_peucker([transpose(c);transpose(r)], 0.1)];
+   result = [result douglas_peucker([transpose(r);transpose(c)], 5)];
 end
 splined = [splined ArteryModeling(result, I)];
+
+
 break
 end
  
