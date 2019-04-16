@@ -16,7 +16,6 @@ test = imread(strcat(strcat('BD_20_Angios/',num2str(i)),'.png'));
 
 tophatFiltered = Detection(test);
 
-
 [AUC, I, mina, specifityValues,sensitivityValues]  = Segmentation( tophatFiltered, groundTruth/255 );
 
 
@@ -44,10 +43,12 @@ for i = 1:components.NumObjects
    if length(r)< 1
        continue
     end
-   result = [result douglas_peucker([transpose(r);transpose(c)], 5)];
+   result = [result dpsimplify([transpose(r);transpose(c)], 1)];
 end
-splined = [splined ArteryModeling(result, I)];
-
+outImg = zeros(size(I));
+outImg(sub2ind(size(I),uint8(result(1,:)),uint8(result(2,:)))) = 1;
+ imshow(outImg)
+%splined = [splined ArteryModeling(result, I)];
 
 break
 end
