@@ -1,5 +1,0 @@
-The following information will guide you how to run a code for demonstration
-
-1 Execute the file "KangBsplineCompare.m" to see the results.
-
-2 Switch "ParallelFlag" to 0 and 1 to run the B-spline fitting based on serial bisecting or parallel bisectiing
