@@ -23,12 +23,14 @@ function [ out] = Skeletonization( Image )
 % % 
 %%%%%%%%%%%%%55
 
-%dilatedImage = imdilate(I,strel('disk',6));
-%I = bwmorph(dilatedImage,'thin',inf);
-I =bwmorph(Image,'skel',Inf);
+%dilatedImage = imdilate(Image,strel('disk',3));
+%Image = bwmorph(dilatedImage,'thin',inf);
 
-dilatedImage = imdilate(I,strel('disk',11));
-out = bwmorph(dilatedImage,'thin',inf);
+out =bwmorph(Image,'skel',Inf);
+
+%dilatedImage = imdilate(I,strel('disk',8));
+%out =bwmorph(dilatedImage,'thin',inf);
+
 return
 %Start off with your code above then do the following
 

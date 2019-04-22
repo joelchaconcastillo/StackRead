@@ -35,11 +35,10 @@ Y = [0;sensitivityValues;1];
 AUC = trapz(Y,X) 
 
 I =imbinarize(tophatFiltered, mina/255);
-
-
-I = bwareaopen(I,300);
+%I =imbinarize(tophatFiltered, 0.05);
+I = bwareaopen(I,400);
 
 I=bwpropfilt(I,'perimeter',1);
-%I = bwconncomp(I);
+
 end
 
