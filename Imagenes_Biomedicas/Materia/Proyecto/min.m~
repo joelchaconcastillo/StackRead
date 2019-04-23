@@ -53,20 +53,14 @@ imshow(tophatFiltered);
 skel = Skeletonization(I);
 hold all;
 
+%imshow(skel)
 
-[i j] = find(bwmorph(skel, 'end'));
-D = bwdistgeodesic(skel,i,j,'quasi');
-imshow(skel);
-for n = 1:numel(i)
-    text(j(n),i(n),[num2str(D(i(n),j(n)))],'color','g');
-end
-
-return;
 %%%%Select the barnch points...
 E = bwmorph(skel, 'branchpoints');
-
+End = bwmorph(skel, 'branchpoints');
 %%Structural elemen to split the branch points...
 
+%%removing fake branchpoints..
 
 
 %%%structural element used in the disconection
@@ -112,6 +106,8 @@ for j =1:NComponents
   %fitting each component....
   %%fit(contour(:,1), contour(:,2),'poly2')
   indexstart=1;
+%[x, y]=find(End,1);
+  NewPoints = transpose(bwtraceboundary(skel, [x y],'N', 8, Inf));
   k = 3;
     t = [repelem(0,k) repelem(1,k)];
   %t = [0 0 0 linspace(0.0001,0.9,3) 1 1 1];
