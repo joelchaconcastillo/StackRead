@@ -53,14 +53,65 @@ imshow(tophatFiltered);
 skel = Skeletonization(I);
 hold all;
 
-%imshow(skel)
 
+[i j] = find(bwmorph(skel, 'end'));
+
+maxdistance = -inf;
+indexa = -1;
+indexb = -1;
+bestPath = skel;
+for a = 1:numel(i)
+    for b = (a+1):numel(i)
+        D1 = bwdistgeodesic(skel,j(a),i(a), 'quasi-euclidean');
+        D2 = bwdistgeodesic(skel,j(b),i(b), 'quasi-euclidean');
+        D = D1 + D2;
+        D = round(D * 8) / 8;
+        D(isnan(D)) = inf;
+        paths = imregionalmin(D);
+        if maxdistance < sum(paths(:))
+            maxdistance = sum(paths(:));
+            indexa=a;
+            indexb=b;
+            bestPath=paths;
+        end
+    end
+end
+imshow(bestPath);
+hold on;
+
+
+   contour=[];
+   try
+     contour = bwtraceboundary(bestPath,[i(indexa),j(indexa)],'N', 8, Inf);
+  catch
+      contour = bwtraceboundary(bestPath,[i(indexa),j(indexa)],'N', 8, Inf, 'counterclockwise');
+  end
+   contour = unique(contour,'rows','stable');
+
+   k = 3;
+  %t = [repelem(0,k) repelem(1,k)];
+  t = [repelem(0,k) linspace(0.0001,0.9,20) repelem(1,k)];  
+   tic;
+  D = bspline_estimate(k,t,transpose(contour));
+  toc
+  C = bspline_deboor(k,t,D);
+   
+   
+plot(C(2,:),C(1,:),'bo')
+
+
+
+
+%for n = 1:numel(i)
+%    text(j(n),i(n),[num2str(D(i(n),j(n)))],'color','g');
+%end
+
+return;
 %%%%Select the barnch points...
 E = bwmorph(skel, 'branchpoints');
-End = bwmorph(skel, 'branchpoints');
+
 %%Structural elemen to split the branch points...
 
-%%removing fake branchpoints..
 
 
 %%%structural element used in the disconection
@@ -106,8 +157,6 @@ for j =1:NComponents
   %fitting each component....
   %%fit(contour(:,1), contour(:,2),'poly2')
   indexstart=1;
-%[x, y]=find(End,1);
-  NewPoints = transpose(bwtraceboundary(skel, [x y],'N', 8, Inf));
   k = 3;
     t = [repelem(0,k) repelem(1,k)];
   %t = [0 0 0 linspace(0.0001,0.9,3) 1 1 1];
