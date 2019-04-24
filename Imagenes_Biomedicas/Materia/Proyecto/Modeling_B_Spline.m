@@ -7,7 +7,7 @@ function [ ModelbyComponent ] = Modeling_B_Spline(Information_Components)
     for j =1:length(IdComponents) 
       listPoints = Information_Components( 1:2, Information_Components(3,:)==IdComponents(j));
       NPoints = length(listPoints(1,:));
-      if NPoints < 1
+      if NPoints < 4
          continue;
       end
       %%Uniform knots method....
@@ -16,7 +16,6 @@ function [ ModelbyComponent ] = Modeling_B_Spline(Information_Components)
       D = bspline_estimate(k,t,listPoints);
       C = [D; repelem(IdComponents(j), length(D(1,:))); repelem(NPoints, length(D(1,:))) ];
       ModelbyComponent = [ModelbyComponent  C];
-      j
     end
 end
 

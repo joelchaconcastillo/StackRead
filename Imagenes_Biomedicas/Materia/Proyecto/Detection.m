@@ -7,13 +7,13 @@ function [ tophatFiltered ] = Detection(Img)
 %Img = imtophat(255-Img,se);
 %return;
 %Img = 255-Img;
-L=15
-T=15
-Sigma=2.4
-k=12
+L=15;
+T=15;
+Sigma=2.4;
+k=12;
 theta = 0:k:180; %different rotations
 out = zeros(size(Img))-1000000;
-Reject = (Img(:) < 40); 
+Reject = (Img(:) < 0); 
 
 m = sqrt((T*T)+(L*L))/2 +1;%max((T-1)/2,(L-1)/2); %%it need to be a square or the convolved image will be smaller
 [x,y] = meshgrid(-m:m,-m:m); % non-rotated coordinate system, contains (0,0)
@@ -28,7 +28,7 @@ for t = theta
    k = k -  mean(k(N));
    k(~N) = 0;%0.03;%ma+0.01;%mean(k(N))+0.01;       
   % set kernel outside of domain to 0
-   res = conv2(Img,k,'same');
+   res = conv2(double(Img),k,'same');
    out = max(out,res);
    %imshow(k);
    %break

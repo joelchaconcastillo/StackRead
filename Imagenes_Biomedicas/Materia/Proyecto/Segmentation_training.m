@@ -1,4 +1,4 @@
-function [ AUC, I, mina, specifityValues,sensitivityValues  ] = Segmentation( tophatFiltered, groundTruth )
+function [ AUC, I, mina, specifityValues,sensitivityValues  ] = Segmentation_training( tophatFiltered, groundTruth )
 sensitivityValues = zeros(256,1); % array to hold sensitivity values for different thresholds
 specifityValues = zeros(256,1); % array to hold specifity values for different thresholds
 %   Detailed explanation goes here

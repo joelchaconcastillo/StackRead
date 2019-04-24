@@ -79,9 +79,8 @@ testDetected = Detection(test);
 
 %Improving and normalizing image....
 testDetected = uint8(round(255*(testDetected-min(testDetected(:)))/(max(testDetected(:)) - min(testDetected(:)))));
-
 BigTestDetected = [BigTestDetected testDetected];
-BigGroundTruth = [BigGroundTruth groundTruth/255];
+
 I = Segmentation_test(tophatFiltered);
 %%%%%%SKELETONIZATION...
 skel = Skeletonization(I);
