@@ -11,7 +11,7 @@ function [ new_skel ] = Sampling_Model( test,  ModelbyComponent)
       %%Uniform knots method....
       NPoints = ModelbyComponent( 4, ModelbyComponent(3,:)==IdComponents(j));
       NPoints = NPoints(1);
-      k= min(5, NPoints);
+      k=5;% min(5, NPoints);
       t = [repelem(0,k) linspace(0.0001,0.9, max(0,NPoints-k)*0.1) repelem(1,k)];
       D =  listControlPoints ;
       C = uint8(bspline_deboor(k,t,D));

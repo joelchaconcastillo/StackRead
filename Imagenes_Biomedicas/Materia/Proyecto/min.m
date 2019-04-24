@@ -73,8 +73,8 @@ break
 end
 
 % return
-intersectImg = splined & skeleton; 
-unionImg = splined | skeleton;
+intersectImg = new_skel & skel; 
+unionImg = new_skel | skel;
 numerator = sum(intersectImg(:));
 denomenator = sum(unionImg(:));
 jaccardIndex = numerator/denomenator
