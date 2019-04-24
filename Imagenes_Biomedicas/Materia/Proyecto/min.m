@@ -1,3 +1,5 @@
+addpath('Bsplines');
+
 groundTruth  =[];
 test =[];
 % for i = 1:20 %%Training....
@@ -54,9 +56,9 @@ imshow(tophatFiltered);
 skel = Skeletonization(I);
 
 %%%%%%%MODELING...
-ArteryModeling(skel);
-
-
+ModelbyComponent = ArteryModeling(skel);
+new_skel = Sampling_Model(test, ModelbyComponent);
+imshow(new_skel);
 %%Modeling artery......
 %splined = [splined ArteryModeling(result, I)];
 
@@ -70,7 +72,7 @@ ArteryModeling(skel);
 break
 end
 
- return
+% return
 intersectImg = splined & skeleton; 
 unionImg = splined | skeleton;
 numerator = sum(intersectImg(:));

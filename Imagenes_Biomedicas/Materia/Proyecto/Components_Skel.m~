@@ -1,4 +1,4 @@
-function [ Information_Components ] = Components_Skel( skel )
+function [ output_args ] = Components_Skel( skel )
 %COMPONENTS_SKEL Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -11,7 +11,11 @@ skelDivided = zeros(size(skel));
 skelDivided(E) = 1;
 
 [Components, NComponents]= bwlabeln(skel.*imcomplement(imdilate(skelDivided, st)));
-Information_Components = [];
+
+Points_Skel = [];
+IDComponent=[];
+EndPointsbyComponent=[];
+ControlPoints = [];
   for j =1:NComponents
       SingleComponent = zeros(size(skel));
       SingleComponent = bwmorph(Components==j, 'endpoints');
@@ -25,9 +29,15 @@ Information_Components = [];
       catch
           contour = bwtraceboundary(SingleComponent,[x y],'N', 8, Inf, 'counterclockwise');
       end
-      contour = transpose(unique(contour,'rows','stable'));
-      contour = [contour; repelem(j , length(contour(1,:))) ];
-      Information_Components = [Information_Components  contour];
+      contour = unique(contour,'rows','stable');
+    
+
+      end
+      Points_Skel = [ Points_Skel NewPoints];
+      IDComponent = [IDComponent ones(1,length(NewPoints(1,:)))*j];
+       j
   end
+
+
 end
 
