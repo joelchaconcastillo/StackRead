@@ -18,16 +18,16 @@ function D = bspline_estimate(k,t,M)
 % Copyright 2010 Levente Hunyadi
 
 x = linspace(t(k), t(end-k+1), size(M,2));  % allocate points uniformly
-for iter = 1 : 50
+for iter = 1 : 1
     D = bspline_approx(k,t,x,M);
-    x = bspline_footpoint(k,t,D,M);
+    %x = bspline_footpoint(k,t,D,M);
     if 0
-        C = bspline_deboor(k,t,D);
-        Y = bspline_deboor(k,t,D,x);
-        hold on;
-        plot(C(1,:), C(2,:), 'b');
-        plot(M(1,:), M(2,:), 'kx');
-        plot(Y(1,:), Y(2,:), 'rx');
-        hold off;
+       % C = bspline_deboor(k,t,D);
+       % Y = bspline_deboor(k,t,D,x);
+        %hold on;
+        %plot(C(1,:), C(2,:), 'b');
+        %plot(M(1,:), M(2,:), 'kx');
+        %plot(Y(1,:), Y(2,:), 'rx');
+        %hold off;
     end
 end

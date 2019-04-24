@@ -57,21 +57,17 @@ skel = Skeletonization(I);
 
 %%%%%%%MODELING...
 ModelbyComponent = ArteryModeling(skel);
+
+%%%%%%INTERPOLATING SKELETON...
 new_skel = Sampling_Model(test, ModelbyComponent);
 imshow(new_skel);
-%%Modeling artery......
-%splined = [splined ArteryModeling(result, I)];
-
-
-%outImg(sub2ind(size(I),uint8(result(1,:)),uint8(result(2,:)))) = 1
-%imshow(skel);
-%hold on;
-%plot(Points_Skel(2,:),Points_Skel(1,:),'ro')
-%return;
+  hold on;
+%%Getting components....
+plot(ModelbyComponent(2,:), ModelbyComponent(1,:),'bo')
 
 break
 end
-
+new_skel =bwmorph(new_skel,'thin',Inf);
 % return
 intersectImg = new_skel & skel; 
 unionImg = new_skel | skel;
